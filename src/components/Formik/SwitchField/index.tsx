@@ -12,10 +12,11 @@ type FormikSwitchProps = SwitchProps & {
 
   onLabel?: string
   offLabel?: string
+  fullWidth?: boolean
 
   readOnly?: boolean
 }
-const FormikSwitch: React.FC<FormikSwitchProps> = ({ label, onLabel = 'Yes', offLabel = 'No', disabled = false, readOnly = false, ...props }) => {
+const FormikSwitch: React.FC<FormikSwitchProps> = ({ label, onLabel = 'Yes', offLabel = 'No', disabled = false, readOnly = false, fullWidth = true, ...props }) => {
   const { isSubmitting } = useFormikContext()
 
   const classes = useStyles()

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useField, useFormikContext } from 'formik'
 import Autocomplete from '@material-ui/lab/Autocomplete' // , { AutocompleteProps }
-import { TextField, Checkbox, TextFieldProps } from '@material-ui/core' // InputAdornment
+import { TextField, Checkbox, TextFieldProps, CircularProgress } from '@material-ui/core' // InputAdornment
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
@@ -15,68 +15,85 @@ export type ComboBoxFieldProps =
     name: string
     multiple?: boolean
     readOnly?: boolean
+    loading?: boolean
   }
 export type ComboBoxFieldOption = {
   label?: string
   value: string
   group?: string
 }
-const ComboBoxField: React.FC<ComboBoxFieldProps> = ({ options, name, multiple = false, disabled, readOnly, ...props }) => {
-  const [field, meta, helpers] = useField(name)
-
+const ComboBoxField: React.FC<ComboBoxFieldProps> = ({ options = [], name, multiple = false, disabled, readOnly, fullWidth, loading, startAdornment, ...props }) => {
   const { isSubmitting } = useFormikContext()
 
-  const { error, touched } = meta
-  const isError = Boolean(touched && error)
+  const [field, meta, helpers] = useField(name)
+  const [value, setValue] = React.useState<any>('')
+  const fieldValue = field.value
+  // const optionString = JSON.stringify(options)
+  React.useEffect(() => {
+    if(options && options.length) {
+      // TODO
+      const currentValue = multiple
+        // eslint-disable-next-line
+        ? options.filter(option => fieldValue.includes(option.value))
+        // eslint-disable-next-line
+        : options.find(option => option.value == fieldValue)
 
+      setValue(currentValue)
+    }
+    // eslint-disable-next-line
+  }, [fieldValue, multiple]) // optionString
   const handleValueChange = (e: any, selected: any) => {
     if (!selected) return helpers.setValue('')
 
-    const value = !multiple ? selected.value :
-      selected.map((x: any) => x.value)
+    const value = !multiple
+      ? selected.value
+      : selected.map((x: any) => x.value)
     helpers.setValue(value)
   }
+
+  const { error, touched } = meta
+  const isError = Boolean(touched && error)
 
   return (
     // @ts-ignore
     <Autocomplete
       {...props}
+      value={value}
+      onChange={handleValueChange}
 
-      disabled={disabled || readOnly || isSubmitting}
+      disabled={loading || disabled || readOnly || isSubmitting}
 
       multiple={multiple}
       disableCloseOnSelect={multiple}
       filterSelectedOptions={!multiple}
-
-      onChange={handleValueChange}
 
       // @ts-ignore
       options={options}
       getOptionLabel={(option: any) => option.label || ''}
       groupBy={(option: any) => option.group}
       renderInput={params => {
-        // const startAdornment = (
-        //   <InputAdornment position='start' style={{ width: '100%' }}>
-        //     {props.startAdornment}
-        //     {params.InputProps.startAdornment}
-        //   </InputAdornment>
-        // )
-        const startAdornment = multiple ? params.InputProps.startAdornment :
-          props.startAdornment ? props.startAdornment :
-            null
+        const mappedStartAdornment = multiple ? params.InputProps.startAdornment :
+          startAdornment ? startAdornment :
+          null
+
+        const mappedEndAdornment = loading
+          ? <CircularProgress style={{ width: 30, height: 30 }} />
+          : params.InputProps.endAdornment
 
         return (
           // @ts-ignore
           <TextField
             error={isError}
             helperText={isError ? error : null}
+            fullWidth={fullWidth}
             {...field}
             {...props}
             {...params}
             InputProps={{
               ...params.InputProps,
               style: { flexWrap: 'nowrap' },
-              startAdornment,
+              startAdornment: mappedStartAdornment,
+              endAdornment: mappedEndAdornment,
             }}
           />
         )

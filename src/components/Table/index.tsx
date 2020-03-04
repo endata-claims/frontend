@@ -16,22 +16,22 @@ const TableWrapper: React.FC<TableWrapperProps> = ({ loading, loadingMore, data,
 
 
   if (loading) return (
-    <Paper className={classes.container}>
+    <div className={classes.container}>
       {loadingComponent}
-    </Paper>
+    </div>
   )
 
   if (!data) return null
 
   return (
-    <Paper className={classes.container}>
+    <div className={classes.container}>
       {!loadingMore ? null : (
         <div style={{ position: 'absolute', top: 33, bottom: 0, left: 0, right: 0, zIndex: 10, background: 'rgba(255, 255, 255, 0.5)' }}>
           {loadingComponent}
         </div>
       )}
       <Table {...props} data={data} />
-    </Paper>
+    </div>
   )
 }
 
@@ -63,7 +63,7 @@ const Table: React.FC<TableProps> = ({
     headerGroups,
     rows,
     prepareRow,
-    flatColumns,
+    columns: flatColumns,
   } = useTable({
     columns,
     data,
@@ -102,8 +102,8 @@ const Table: React.FC<TableProps> = ({
                     const { isExpanded } = row
 
                     return (
-                      <React.Fragment {...row.getRowProps()}>
-                        <TableRow onClick={onRowClick ? () => onRowClick(row) : () => { }} className={classes.tableRow}>
+                      <React.Fragment key={row.id}>
+                        <TableRow onClick={onRowClick ? () => onRowClick(row) : () => { }} className={classes.tableRow} {...row.getRowProps()}>
                           {row.cells.map(cell => {
                             return (
                               <TableCell {...cell.getCellProps()} className={classes.tableBodyCell}>
@@ -125,7 +125,7 @@ const Table: React.FC<TableProps> = ({
                 )
                 : (
                   <TableRow>
-                    <TableCell colSpan={flatColumns.length}>
+                    <TableCell colSpan={flatColumns?.length ?? 4}>
                       No item found
                     </TableCell>
                   </TableRow>

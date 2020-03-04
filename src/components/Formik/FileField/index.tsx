@@ -1,51 +1,52 @@
 import React from 'react'
-import { TextField, TextFieldProps } from '@material-ui/core'
-import { useField, useFormikContext } from 'formik'
+import { Field, useFormikContext, useField } from 'formik'
+import { SimpleFileUpload } from 'formik-material-ui'
 
-export type FileFieldProps = TextFieldProps & {
+export const blackListedExt = [
+  '.EXE', '.PIF', '.APPLICATION', '.GADGET', '.MSI', '.MSP', '.COM', '.SCR', '.HTA', '.CPL', '.MSC', '.JAR',
+  '.BAT', '.CMD', '.VB', '.VBS', '.VBE', '.JS', '.JSE', '.WS', '.WSF', '.WSC', '.WSH', '.PS1', '.PS1XML', '.PS2', '.PS2XML',
+  '.PSC1', '.PSC2', '.MSH', '.MSH1', '.MSH2', '.MSHXML', '.MSH1XML', '.MSH2XML', '.SCF', '.LNK', '.INF', '.REG',
+]
+
+export type FileFieldProps = {
   name: string
   label: string
   disabled?: boolean
   readOnly?: boolean
+  required?: boolean
 }
 
-const FileField: React.FC<FileFieldProps> = ({
-  name, label,
-  disabled = false,
-  readOnly = false,
-  InputProps, InputLabelProps,
-  ...props
-}) => {
+const FileField: React.FC<FileFieldProps> = ({ disabled, readOnly, required, label, ...props }) => {
+  const [, , helpers] = useField(props.name)
+
   const { isSubmitting } = useFormikContext()
-  const [field, meta, helpers] = useField(name)
-  const error = meta.touched && meta.error
+  const isDisabled = disabled || isSubmitting || readOnly
 
   return (
-    <TextField
+    <Field
       {...props}
-      type='file'
+      label={required ? `${label}*` : label}
+      validate={(file: any) => {
+        if (!isDisabled && required && !file) return 'Required!'
 
-      onChange={(event: any) => {
-        const file = event.currentTarget.files[0]
-        helpers.setValue(file)
-        helpers.setTouched(true)
+        const { name, size } = file
+
+        const extension = `.${name.split('.')[name.split('.').length - 1]}`.toUpperCase()
+        if (blackListedExt.includes(extension)) return 'File extension is not supported'
+
+        if (size > 31457280) return 'Maximum file size is 30MB'
+        if (size < 1) return 'Minimum file size is 1 byte'
+
+        if (name.length > 60) return 'Maximum file name length is 60'
+        if (name.length < 5) return 'Minimum file name length is 5'
       }}
-      onBlur={() => field.onBlur(name)}
-
-      disabled={disabled || isSubmitting || readOnly}
-      error={Boolean(error)}
-      helperText={error}
-
+      component={SimpleFileUpload}
+      disabled={isDisabled}
       InputProps={{
-        ...InputProps,
-        // readOnly: true
-      }}
-
-      InputLabelProps={{
-        ...InputLabelProps,
-        shrink: true,
+        onClick: () => helpers.setTouched(true)
       }}
     />
   )
 }
 export default FileField
+

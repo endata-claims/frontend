@@ -4,7 +4,7 @@ import TextField, { FormikTextFieldProps } from '../TextField'
 import { MenuItem } from '@material-ui/core'
 
 export type FormikSelectFieldProps = FormikTextFieldProps & {
-  options?: SelectOption[]
+  options?: SelectOption[] | null
 }
 export type SelectOption = {
   label?: string
