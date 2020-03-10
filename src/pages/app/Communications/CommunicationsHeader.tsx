@@ -2,8 +2,23 @@ import React from 'react'
 
 import FilterGroup from 'components/FilterGroup'
 import { FilterProps } from 'components/FilterGroup/Filter'
-import { Paper } from '@material-ui/core'
+import { Paper, Grid } from '@material-ui/core'
 
+import { gql } from '@apollo/client'
+
+gql`
+  fragment CommunicationHeaderFragment on FilterInput {
+    id
+    type
+    label
+    name
+    options {
+      group
+      label
+      value: id
+    }
+  }
+`
 interface CommunicationsHeaderProps {
   setFilterValues: (values: any) => void
   filters?: FilterProps[]
@@ -14,20 +29,13 @@ const CommunicationsHeader: React.FC<CommunicationsHeaderProps> = ({ loading, fi
     <Paper style={{ padding: 16 }}>
       <FilterGroup
         loading={loading}
-        firstRowFilters={5}
+        firstRowFilters={6}
         filters={filters}
-        // filterRender={(Filter, props, index) => (
-        //   <React.Fragment key={props.name}>
-        //     {index === 0 && (
-        //       <Grid item xs={2}>
-        //         <SearchField label='Search' submit={handleSearchSubmit} />
-        //       </Grid>
-        //     )}
-        //     <Grid item xs={2}>
-        //       <Filter {...props} fullWidth variant='outlined' />
-        //     </Grid>
-        //   </React.Fragment>
-        // )}
+        filterRender={(Comp, props, index) => (
+          <Grid key={index} item xs={2}>
+            <Comp {...props} fullWidth variant='outlined' />
+          </Grid>
+        )}
         onChange={values => setFilterValues(values)}
       />
     </Paper>

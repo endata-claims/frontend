@@ -1,11 +1,13 @@
 import React from 'react'
 
-import { useField } from 'formik'
+import { useField, useFormikContext } from 'formik'
 import RichTextEditor from 'react-rte'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
 
-export default ({ name, label, placeholder, ...props }: any) => {
+export default ({ name, label, placeholder, disabled, ...props }: any) => {
+  const { isSubmitting } = useFormikContext()
+
   const [field, meta, helpers] = useField(name)
   const { error, touched } = meta
   const isError = Boolean(touched && error)
@@ -19,6 +21,7 @@ export default ({ name, label, placeholder, ...props }: any) => {
     <FormControl error={isError} style={{ width: '100%' }} id={field.name}>
       <RichTextEditor
         {...props}
+        disabled={disabled || isSubmitting}
         placeholder={placeholder || label}
         toolbarConfig={{
           display: [

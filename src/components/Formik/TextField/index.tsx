@@ -50,7 +50,7 @@ const FormikTextField: React.FC<FormikTextFieldProps> = ({ startAdornment, endAd
           : null
       }}
       validate={(value: any) => {
-        if (!isDisabled && required && !value) return 'Required!'
+        if (!isDisabled && required && !value && value != 0) return 'Required!'
         if (validate) return validate(value)
       }}
     />

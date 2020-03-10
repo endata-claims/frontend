@@ -15,6 +15,8 @@ export type Scalars = {
   Byte: any,
   Decimal: any,
   Short: any,
+  Json: any,
+  Grid: any,
   PersonName: any,
   Phone: any,
   Email: any,
@@ -22,7 +24,6 @@ export type Scalars = {
   DateTimeOffset: any,
   Milliseconds: any,
   Seconds: any,
-  Upload: any,
 };
 
 export enum AccessRole {
@@ -40,34 +41,6 @@ export enum AccessRole {
   SystemAdmin = 'SystemAdmin'
 }
 
-export type Account = {
-   __typename?: 'Account',
-  id: Scalars['ID'],
-  callStatusConfigs: Array<CallStatusConfig>,
-  clientActionsConfig: ClientActionsConfig,
-  rooms: Array<Room>,
-};
-
-export type AccountCreateDataInput = {
-  messageConfigs?: Maybe<MessageConfigsInput>,
-  actionConfigs?: Maybe<ActionConfigsInput>,
-};
-
-export type AccountCreatePayload = {
-   __typename?: 'AccountCreatePayload',
-  token?: Maybe<Scalars['String']>,
-  account?: Maybe<Account>,
-};
-
-export type AccountUniqueWhereInput = {
-  accountId: Scalars['ID'],
-};
-
-export type AccountUpdateDataInput = {
-  messageConfigs?: Maybe<MessageConfigsInput>,
-  actionConfigs?: Maybe<ActionConfigsInput>,
-};
-
 export type Action = {
    __typename?: 'Action',
   actionType?: Maybe<ActionType>,
@@ -75,14 +48,6 @@ export type Action = {
   isDisabled: Scalars['Boolean'],
   isDisplay: Scalars['Boolean'],
   name: Scalars['String'],
-};
-
-export type ActionConfigsInput = {
-  takingPicture?: Maybe<Scalars['Boolean']>,
-  toggleVideo?: Maybe<Scalars['Boolean']>,
-  toggleAudio?: Maybe<Scalars['Boolean']>,
-  toggleRecording?: Maybe<Scalars['Boolean']>,
-  hangup?: Maybe<Scalars['Boolean']>,
 };
 
 export enum ActionType {
@@ -108,7 +73,8 @@ export enum ActionType {
   ClaimCashSettle = 'CLAIM_CASH_SETTLE',
   ClaimjobAllocateSupplier = 'CLAIMJOB_ALLOCATE_SUPPLIER',
   ClaimjobReallocateSupplier = 'CLAIMJOB_REALLOCATE_SUPPLIER',
-  FilterInternalAssessor = 'FILTER_INTERNAL_ASSESSOR'
+  FilterInternalAssessor = 'FILTER_INTERNAL_ASSESSOR',
+  FilterRecommendationStatus = 'FILTER_RECOMMENDATION_STATUS'
 }
 
 export type AddPortfolioInput = {
@@ -187,74 +153,13 @@ export type AwaitingInfoClaimInputType = {
 };
 
 
-export type CallSession = {
-   __typename?: 'CallSession',
+export type Card = {
+   __typename?: 'Card',
   id: Scalars['ID'],
-  userType?: Maybe<CallSessionUserType>,
-  callStatus: CallStatusConfig,
-  room: Room,
-  contact?: Maybe<CallSessionContact>,
-};
-
-export type CallSessionContact = {
-   __typename?: 'CallSessionContact',
-  id: Scalars['ID'],
-  email?: Maybe<Scalars['String']>,
-  phone?: Maybe<Scalars['String']>,
-};
-
-export type CallSessionStatusUpdateDataInput = {
-  accountId?: Maybe<Scalars['ID']>,
-  status?: Maybe<CallSessionUpdateStatusEnum>,
-};
-
-export type CallSessionStatusUpdateWhereInput = {
-  callSessionId?: Maybe<Scalars['ID']>,
-};
-
-export type CallSessionSubscriptionWhereInput = {
-  roomId?: Maybe<Scalars['ID']>,
-  callSessionId?: Maybe<Scalars['ID']>,
-};
-
-export enum CallSessionUpdateStatusEnum {
-  CheckRequirements = 'CHECK_REQUIREMENTS',
-  CheckRequirementsFailed = 'CHECK_REQUIREMENTS_FAILED',
-  SignallingFailed = 'SIGNALLING_FAILED'
-}
-
-export enum CallSessionUserType {
-  Owner = 'OWNER',
-  Guest = 'GUEST'
-}
-
-export type CallSessionWhereInput = {
-  callSessionId?: Maybe<Scalars['ID']>,
-};
-
-export type CallStatusConfig = {
-   __typename?: 'CallStatusConfig',
-  id: Scalars['ID'],
-  status: CallStatusEnum,
-  message: Scalars['String'],
-};
-
-export enum CallStatusEnum {
-  InitSession = 'INIT_SESSION',
-  CheckRequirements = 'CHECK_REQUIREMENTS',
-  CheckRequirementsFailed = 'CHECK_REQUIREMENTS_FAILED',
-  Signalling = 'SIGNALLING',
-  SignallingFailed = 'SIGNALLING_FAILED',
-  Connected = 'CONNECTED',
-  Ended = 'ENDED'
-}
-
-export type Case = {
-   __typename?: 'Case',
-  id: Scalars['ID'],
-  referenceNumber: Scalars['String'],
-  name?: Maybe<Scalars['String']>,
-  address?: Maybe<Scalars['String']>,
+  title?: Maybe<Scalars['String']>,
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  fields?: Maybe<Array<Field>>,
 };
 
 export type CaseReportFilter = {
@@ -272,6 +177,8 @@ export type CaseReportFilter = {
   buildingStatus?: Maybe<Array<Scalars['ID']>>,
   contentsStatus?: Maybe<Array<Scalars['ID']>>,
   restorationStatus?: Maybe<Array<Scalars['ID']>>,
+  suppliers?: Maybe<Array<Scalars['ID']>>,
+  status?: Maybe<Array<Scalars['ID']>>,
   regions?: Maybe<Array<Maybe<Scalars['String']>>>,
   dateRange?: Maybe<DateRangeOption>,
   portfolios?: Maybe<Array<Maybe<PortfolioType>>>,
@@ -499,6 +406,8 @@ export type ClaimJob = {
   policyCover?: Maybe<PolicyCover>,
   policyType?: Maybe<PolicyType>,
   refNumber: Scalars['String'],
+  reportData?: Maybe<Scalars['Json']>,
+  reportForm?: Maybe<Form>,
   reportFormId?: Maybe<Scalars['ID']>,
   requireCustomLogin?: Maybe<Scalars['Boolean']>,
   restoration?: Maybe<ClaimPortfolio>,
@@ -572,6 +481,8 @@ export type ClaimJobFilter = {
   buildingStatus?: Maybe<Array<Scalars['ID']>>,
   contentsStatus?: Maybe<Array<Scalars['ID']>>,
   restorationStatus?: Maybe<Array<Scalars['ID']>>,
+  suppliers?: Maybe<Array<Scalars['ID']>>,
+  status?: Maybe<Array<Scalars['ID']>>,
   internalAssessors?: Maybe<Array<Scalars['ID']>>,
   jobStatuses?: Maybe<Array<Scalars['ID']>>,
   claimStatusStageIds?: Maybe<Array<Scalars['ID']>>,
@@ -961,16 +872,6 @@ export type ClaimUniqueWhere = {
   claimId: Scalars['ID'],
 };
 
-export type ClientActionsConfig = {
-   __typename?: 'ClientActionsConfig',
-  id: Scalars['ID'],
-  takingPicture: Scalars['Boolean'],
-  toggleVideo: Scalars['Boolean'],
-  toggleAudio: Scalars['Boolean'],
-  toggleRecording: Scalars['Boolean'],
-  hangup: Scalars['Boolean'],
-};
-
 export type CommunicationFilter = {
   id?: Maybe<Scalars['ID']>,
   claimId?: Maybe<Scalars['ID']>,
@@ -1226,6 +1127,15 @@ export enum DateRangeOption {
 
 
 
+export type DateTimeField = Field & {
+   __typename?: 'DateTimeField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+};
+
 
 
 
@@ -1459,10 +1369,28 @@ export type FeeType = {
   suppliersAndAmounts?: Maybe<Array<Maybe<FeeAmount>>>,
 };
 
+export type Field = {
+  id: Scalars['ID'],
+  label?: Maybe<Scalars['String']>,
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+};
+
 export type File = {
    __typename?: 'File',
+  fileId: Scalars['Int'],
   id: Scalars['ID'],
+  name: Scalars['String'],
   url: Scalars['String'],
+};
+
+export type FileField = Field & {
+   __typename?: 'FileField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
 };
 
 export type FilterElement = {
@@ -1488,14 +1416,14 @@ export type FilterInput = {
 export type FilterInputOption = {
    __typename?: 'FilterInputOption',
   group?: Maybe<Scalars['String']>,
-  id: Scalars['ID'],
+  id?: Maybe<Scalars['ID']>,
   label: Scalars['String'],
 };
 
 export type FilterOption = {
    __typename?: 'FilterOption',
   group?: Maybe<Scalars['String']>,
-  id: Scalars['ID'],
+  id?: Maybe<Scalars['ID']>,
   name: Scalars['String'],
   value: Scalars['String'],
 };
@@ -1508,7 +1436,8 @@ export enum FilterType {
   Select = 'Select',
   SelectMultiple = 'Select_multiple',
   ComboBox = 'ComboBox',
-  ComboBoxMultiple = 'ComboBox_multiple'
+  ComboBoxMultiple = 'ComboBox_multiple',
+  Search = 'Search'
 }
 
 export type FinaliseClaimInput = {
@@ -1524,11 +1453,30 @@ export type FollowUpClaimInputType = {
   nextFollowUpDate?: Maybe<Scalars['DateTimeString']>,
 };
 
+export type Form = {
+   __typename?: 'Form',
+  cards?: Maybe<Array<Card>>,
+  id: Scalars['ID'],
+  title?: Maybe<Scalars['String']>,
+  description?: Maybe<Scalars['String']>,
+};
+
 export type GeneralPayload = {
    __typename?: 'GeneralPayload',
   fieldErrors?: Maybe<Array<Maybe<EntityFieldError>>>,
   messages: Array<Scalars['String']>,
   success: Scalars['Boolean'],
+};
+
+
+export type GroupField = Field & {
+   __typename?: 'GroupField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+  fields?: Maybe<Array<Field>>,
 };
 
 export type HaTypeVisit = {
@@ -1567,6 +1515,15 @@ export type IncidentEvent = {
    __typename?: 'IncidentEvent',
   eventName: Scalars['String'],
   eventTypeId: Scalars['Int'],
+};
+
+export type InfoField = Field & {
+   __typename?: 'InfoField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  value?: Maybe<Scalars['String']>,
 };
 
 export type InternalAssesor = {
@@ -2149,6 +2106,7 @@ export type JobWorkProgressInput = {
   portfolioType: PortfolioType,
 };
 
+
 export enum LogLevel {
   Trace = 'Trace',
   Debug = 'Debug',
@@ -2167,16 +2125,6 @@ export type LossAdjusterReportType = {
 
 export type MakeInitialCallInput = {
   note?: Maybe<Scalars['String']>,
-};
-
-export type MessageConfigsInput = {
-  initSessionMessage: Scalars['String'],
-  checkRequirementsMessage: Scalars['String'],
-  checkRequirementsFailedMessage: Scalars['String'],
-  signallingMessage: Scalars['String'],
-  signallingFailedMessage: Scalars['String'],
-  connectedMessage: Scalars['String'],
-  endedMessage: Scalars['String'],
 };
 
 
@@ -2263,11 +2211,6 @@ export type Mutation = {
   userLogout?: Maybe<GeneralPayload>,
   userRenewToken?: Maybe<UserValidation>,
   userServiceToken?: Maybe<ServiceValidation>,
-  accountCreate?: Maybe<AccountCreatePayload>,
-  accountUpdate?: Maybe<Account>,
-  roomCreate?: Maybe<Room>,
-  roomJoin?: Maybe<RoomJoinPayload>,
-  callSessionStatusUpdate?: Maybe<CallSession>,
 };
 
 
@@ -2691,34 +2634,6 @@ export type MutationUserServiceTokenArgs = {
   input: ServiceInput
 };
 
-
-export type MutationAccountCreateArgs = {
-  data: AccountCreateDataInput
-};
-
-
-export type MutationAccountUpdateArgs = {
-  where: AccountUniqueWhereInput,
-  data: AccountUpdateDataInput
-};
-
-
-export type MutationRoomCreateArgs = {
-  data?: Maybe<RoomCreateDataInput>
-};
-
-
-export type MutationRoomJoinArgs = {
-  where?: Maybe<RoomJoinWhereInput>,
-  data?: Maybe<RoomJoinDataInput>
-};
-
-
-export type MutationCallSessionStatusUpdateArgs = {
-  where?: Maybe<CallSessionStatusUpdateWhereInput>,
-  data?: Maybe<CallSessionStatusUpdateDataInput>
-};
-
 export type PageInfo = {
    __typename?: 'PageInfo',
   endCursor?: Maybe<Scalars['String']>,
@@ -2794,8 +2709,6 @@ export type Query = {
    __typename?: 'Query',
   _claimCategories: Array<Maybe<SelectOption>>,
   _states: Array<Maybe<SelectOption>>,
-  account?: Maybe<Account>,
-  callSessions: Array<CallSession>,
   claimCommuications?: Maybe<ClaimCommunicationConnection>,
   claimDocuments?: Maybe<ClaimDocumentConnection>,
   claimFilterOptions?: Maybe<Array<Maybe<FilterOption>>>,
@@ -2819,6 +2732,7 @@ export type Query = {
   feeItem?: Maybe<FeeItem>,
   feeItems?: Maybe<Array<Maybe<FeeItem>>>,
   feePortfolios?: Maybe<Array<Maybe<FeePortfolio>>>,
+  form?: Maybe<Form>,
   internalAssessors?: Maybe<InternalAssesorConnection>,
   jobMakeSafes?: Maybe<JobMakeSafeConnection>,
   jobQuotes?: Maybe<JobQuoteConnection>,
@@ -2837,11 +2751,6 @@ export type Query = {
   specialistRequests?: Maybe<Array<Maybe<SpecialistRequest>>>,
   specialists?: Maybe<Array<Maybe<Company>>>,
   supervisors?: Maybe<SupervisorConnection>,
-};
-
-
-export type QueryCallSessionsArgs = {
-  where?: Maybe<CallSessionWhereInput>
 };
 
 
@@ -2944,6 +2853,11 @@ export type QueryFeeItemsArgs = {
 
 export type QueryFeePortfoliosArgs = {
   where: ClaimPortfoliosWhere
+};
+
+
+export type QueryFormArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -3205,50 +3119,23 @@ export enum RequestCategory {
   Lost = 'Lost'
 }
 
-export type Room = {
-   __typename?: 'Room',
+
+export type SelectField = Field & {
+   __typename?: 'SelectField',
   id: Scalars['ID'],
-  account: Account,
-  case?: Maybe<Case>,
-  status?: Maybe<RoomStatus>,
-  callSessions: Array<CallSession>,
-  photos: Array<File>,
-  videos: Array<File>,
-};
-
-export type RoomCreateDataInput = {
-  endataCaseId?: Maybe<Scalars['String']>,
-  referenceNumber: Scalars['String'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
   name?: Maybe<Scalars['String']>,
-  address?: Maybe<Scalars['String']>,
-  phone: Scalars['String'],
-  email?: Maybe<Scalars['String']>,
+  options?: Maybe<Array<SelectFieldOption>>,
 };
 
-export type RoomJoinDataInput = {
-  accountId?: Maybe<Scalars['ID']>,
-  sdpOffer?: Maybe<Scalars['String']>,
-  clientIceCandidates: Array<Scalars['String']>,
+export type SelectFieldOption = {
+   __typename?: 'SelectFieldOption',
+  id: Scalars['ID'],
+  label: Scalars['String'],
+  value: Scalars['String'],
 };
-
-export type RoomJoinPayload = {
-   __typename?: 'RoomJoinPayload',
-  sdpAnswer?: Maybe<Scalars['String']>,
-  serverIceCandidates: Array<Scalars['String']>,
-  callSession?: Maybe<CallSession>,
-};
-
-export type RoomJoinWhereInput = {
-  roomId?: Maybe<Scalars['ID']>,
-  callSessionId?: Maybe<Scalars['ID']>,
-};
-
-export enum RoomStatus {
-  InCall = 'IN_CALL',
-  OnHold = 'ON_HOLD',
-  Ended = 'ENDED'
-}
-
 
 export type SelectOption = {
    __typename?: 'SelectOption',
@@ -3412,16 +3299,6 @@ export enum State {
   Nt = 'NT'
 }
 
-export type Subscription = {
-   __typename?: 'Subscription',
-  callSession?: Maybe<CallSession>,
-};
-
-
-export type SubscriptionCallSessionArgs = {
-  where?: Maybe<CallSessionSubscriptionWhereInput>
-};
-
 export type Supervisor = {
    __typename?: 'Supervisor',
   companyId: Scalars['Int'],
@@ -3486,6 +3363,34 @@ export enum SupplierTypeFilter {
   SupplierExcludeScoping = 'SupplierExcludeScoping'
 }
 
+export type SwitchField = Field & {
+   __typename?: 'SwitchField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+};
+
+export type TextAreaField = Field & {
+   __typename?: 'TextAreaField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+  rows?: Maybe<Scalars['Int']>,
+  rowsMax?: Maybe<Scalars['Int']>,
+};
+
+export type TextField = Field & {
+   __typename?: 'TextField',
+  id: Scalars['ID'],
+  order?: Maybe<Scalars['Int']>,
+  grid?: Maybe<Scalars['Grid']>,
+  label?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
+};
 
 export type User = {
    __typename?: 'User',
@@ -3983,6 +3888,7 @@ export type ClaimDetailsQuery = (
     { __typename?: 'ClaimJob' }
     & InfoCardDataFragmentFragment
     & JobInfoTabFragmentFragment
+    & ReportTabFragmentFragment
   )> }
 );
 
@@ -4051,6 +3957,15 @@ export type JobInfo_CustomerInfoCardMetaFragmentFragment = (
 export type JobInfo_QuotingBuilderCardFragmentFragment = (
   { __typename?: 'Query' }
   & { quotingBuilders: Maybe<Array<Maybe<(
+    { __typename?: 'FilterOption' }
+    & Pick<FilterOption, 'value'>
+    & { label: FilterOption['name'] }
+  )>>> }
+);
+
+export type JobInfo_QuotingRestorerCardFragmentFragment = (
+  { __typename?: 'Query' }
+  & { quotingRestorers: Maybe<Array<Maybe<(
     { __typename?: 'FilterOption' }
     & Pick<FilterOption, 'value'>
     & { label: FilterOption['name'] }
@@ -4162,7 +4077,8 @@ export type JobInfoQueryVariables = {
   policyTypesWhere?: Maybe<ClaimJobFilter>,
   policyCoversWhere?: Maybe<ClaimJobFilter>,
   internalAssessorsWhere?: Maybe<ClaimJobFilter>,
-  whereQuotingBuilder?: Maybe<ClaimJobFilter>
+  whereQuotingBuilder?: Maybe<ClaimJobFilter>,
+  whereQuotingRestorer?: Maybe<ClaimJobFilter>
 };
 
 
@@ -4177,6 +4093,101 @@ export type JobInfoQuery = (
   )>> }
   & JobInfo_ClaimDetailsCardFragmentFragment
   & JobInfo_QuotingBuilderCardFragmentFragment
+  & JobInfo_QuotingRestorerCardFragmentFragment
+);
+
+export type JobInfoTabUpdateMutationVariables = {
+  input: ClaimJobInput,
+  where: EnDataEntityKey
+};
+
+
+export type JobInfoTabUpdateMutation = (
+  { __typename?: 'Mutation' }
+  & { updateClaimJob: Maybe<(
+    { __typename?: 'ClaimJobPayload' }
+    & Pick<ClaimJobPayload, 'success' | 'messages'>
+    & { fieldErrors: Maybe<Array<Maybe<(
+      { __typename?: 'EntityFieldError' }
+      & Pick<EntityFieldError, 'fieldName' | 'level' | 'message'>
+    )>>> }
+  )> }
+);
+
+export type FormCardFragmentFragment = (
+  { __typename?: 'Card' }
+  & Pick<Card, 'id' | 'grid' | 'order' | 'title'>
+  & { fields: Maybe<Array<(
+    { __typename: 'DateTimeField' }
+    & Pick<DateTimeField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+  ) | (
+    { __typename: 'FileField' }
+    & Pick<FileField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+  ) | (
+    { __typename: 'GroupField' }
+    & Pick<GroupField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+    & { fields: Maybe<Array<(
+      { __typename: 'DateTimeField' }
+      & Pick<DateTimeField, 'name' | 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'FileField' }
+      & Pick<FileField, 'name' | 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'GroupField' }
+      & Pick<GroupField, 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'InfoField' }
+      & Pick<InfoField, 'value' | 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'SelectField' }
+      & Pick<SelectField, 'name' | 'order' | 'grid' | 'label'>
+      & { options: Maybe<Array<(
+        { __typename?: 'SelectFieldOption' }
+        & Pick<SelectFieldOption, 'label' | 'value'>
+      )>> }
+    ) | (
+      { __typename: 'SwitchField' }
+      & Pick<SwitchField, 'name' | 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'TextAreaField' }
+      & Pick<TextAreaField, 'name' | 'rows' | 'rowsMax' | 'order' | 'grid' | 'label'>
+    ) | (
+      { __typename: 'TextField' }
+      & Pick<TextField, 'name' | 'order' | 'grid' | 'label'>
+    )>> }
+  ) | (
+    { __typename: 'InfoField' }
+    & Pick<InfoField, 'value' | 'id' | 'grid' | 'order' | 'label'>
+  ) | (
+    { __typename: 'SelectField' }
+    & Pick<SelectField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+    & { options: Maybe<Array<(
+      { __typename?: 'SelectFieldOption' }
+      & Pick<SelectFieldOption, 'label' | 'value'>
+    )>> }
+  ) | (
+    { __typename: 'SwitchField' }
+    & Pick<SwitchField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+  ) | (
+    { __typename: 'TextAreaField' }
+    & Pick<TextAreaField, 'name' | 'rows' | 'rowsMax' | 'id' | 'grid' | 'order' | 'label'>
+  ) | (
+    { __typename: 'TextField' }
+    & Pick<TextField, 'name' | 'id' | 'grid' | 'order' | 'label'>
+  )>> }
+);
+
+export type ReportTabFragmentFragment = (
+  { __typename?: 'ClaimJob' }
+  & { reportForm: Maybe<(
+    { __typename?: 'Form' }
+    & Pick<Form, 'title'>
+    & { cards: Maybe<Array<(
+      { __typename?: 'Card' }
+      & Pick<Card, 'id'>
+      & FormCardFragmentFragment
+    )>> }
+  )> }
 );
 
 export type ClaimListBodyFragment = (
@@ -4262,20 +4273,44 @@ export type ClaimListBodyFragment = (
   )> }
 );
 
-export type ClaimListFiltersQueryVariables = {};
+export type ClaimListFilterQueryVariables = {};
 
 
-export type ClaimListFiltersQuery = (
+export type ClaimListFilterQuery = (
   { __typename?: 'Query' }
-  & { claimFilters: Maybe<Array<Maybe<(
-    { __typename?: 'FilterElement' }
-    & Pick<FilterElement, 'id' | 'name'>
-    & { options: Maybe<Array<Maybe<(
-      { __typename?: 'FilterOption' }
-      & Pick<FilterOption, 'group' | 'value'>
-      & { label: FilterOption['name'] }
+  & { currentUser: Maybe<(
+    { __typename?: 'AuthenticatedUser' }
+    & { claimFilters: Maybe<Array<Maybe<(
+      { __typename?: 'FilterInput' }
+      & Pick<FilterInput, 'id' | 'type' | 'label' | 'name'>
+      & { options: Maybe<Array<Maybe<(
+        { __typename?: 'FilterInputOption' }
+        & Pick<FilterInputOption, 'group' | 'label'>
+        & { value: FilterInputOption['id'] }
+      )>>> }
     )>>> }
-  )>>> }
+  )> }
+);
+
+export type ClaimListWaterfallFilterQueryVariables = {
+  where: ClaimStatusVolumeWhere
+};
+
+
+export type ClaimListWaterfallFilterQuery = (
+  { __typename?: 'Query' }
+  & { currentUser: Maybe<(
+    { __typename?: 'AuthenticatedUser' }
+    & { waterfallFilters: Maybe<Array<(
+      { __typename?: 'ClaimStatusVolumeGroup' }
+      & Pick<ClaimStatusVolumeGroup, 'id'>
+      & { items: Array<(
+        { __typename?: 'ClaimStatusVolume' }
+        & Pick<ClaimStatusVolume, 'label' | 'claimCount' | 'color'>
+        & { value: ClaimStatusVolume['id'] }
+      )> }
+    )>> }
+  )> }
 );
 
 export type ClaimListDataQueryVariables = {
@@ -4337,20 +4372,28 @@ export type ClaimCommunicationBodyFragment = (
   & Pick<ClaimCommunication, 'id' | 'claimId' | 'portfolioType' | 'claimRef' | 'sendDate' | 'senderName' | 'senderCompanyName' | 'message' | 'senderCompanyId' | 'senderRole' | 'communicationId'>
 );
 
+export type CommunicationHeaderFragmentFragment = (
+  { __typename?: 'FilterInput' }
+  & Pick<FilterInput, 'id' | 'type' | 'label' | 'name'>
+  & { options: Maybe<Array<Maybe<(
+    { __typename?: 'FilterInputOption' }
+    & Pick<FilterInputOption, 'group' | 'label'>
+    & { value: FilterInputOption['id'] }
+  )>>> }
+);
+
 export type CommunicationListFiltersQueryVariables = {};
 
 
 export type CommunicationListFiltersQuery = (
   { __typename?: 'Query' }
-  & { communicationFilters: Maybe<Array<Maybe<(
-    { __typename?: 'FilterElement' }
-    & Pick<FilterElement, 'id' | 'name'>
-    & { options: Maybe<Array<Maybe<(
-      { __typename?: 'FilterOption' }
-      & Pick<FilterOption, 'group' | 'value'>
-      & { label: FilterOption['name'] }
+  & { currentUser: Maybe<(
+    { __typename?: 'AuthenticatedUser' }
+    & { communicationFilters: Maybe<Array<Maybe<(
+      { __typename?: 'FilterInput' }
+      & CommunicationHeaderFragmentFragment
     )>>> }
-  )>>> }
+  )> }
 );
 
 export type CommunicationsDataQueryVariables = {
@@ -4820,6 +4863,14 @@ export const JobInfo_QuotingBuilderCardFragmentFragmentDoc = gql`
   }
 }
     `;
+export const JobInfo_QuotingRestorerCardFragmentFragmentDoc = gql`
+    fragment JobInfo_QuotingRestorerCardFragment on Query {
+  quotingRestorers: claimFilterOptions(where: $whereQuotingRestorer) {
+    label: name
+    value
+  }
+}
+    `;
 export const JobInfoTabFragmentFragmentDoc = gql`
     fragment JobInfoTabFragment on ClaimJob {
   id
@@ -5017,6 +5068,95 @@ export const JobInfoTabFragmentFragmentDoc = gql`
   claimDescription
 }
     `;
+export const FormCardFragmentFragmentDoc = gql`
+    fragment FormCardFragment on Card {
+  id
+  grid
+  order
+  title
+  fields {
+    __typename
+    id
+    grid
+    order
+    label
+    ... on InfoField {
+      value
+    }
+    ... on TextField {
+      name
+    }
+    ... on TextAreaField {
+      name
+      rows
+      rowsMax
+    }
+    ... on SelectField {
+      name
+      options {
+        label
+        value
+      }
+    }
+    ... on SwitchField {
+      name
+    }
+    ... on FileField {
+      name
+    }
+    ... on DateTimeField {
+      name
+    }
+    ... on GroupField {
+      name
+      fields {
+        __typename
+        order
+        grid
+        label
+        ... on InfoField {
+          value
+        }
+        ... on TextField {
+          name
+        }
+        ... on TextAreaField {
+          name
+          rows
+          rowsMax
+        }
+        ... on SelectField {
+          name
+          options {
+            label
+            value
+          }
+        }
+        ... on SwitchField {
+          name
+        }
+        ... on FileField {
+          name
+        }
+        ... on DateTimeField {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+export const ReportTabFragmentFragmentDoc = gql`
+    fragment ReportTabFragment on ClaimJob {
+  reportForm {
+    title
+    cards {
+      id
+      ...FormCardFragment
+    }
+  }
+}
+    ${FormCardFragmentFragmentDoc}`;
 export const ClaimListBodyFragmentDoc = gql`
     fragment ClaimListBody on ClaimJob {
   id
@@ -5255,6 +5395,19 @@ export const ClaimCommunicationBodyFragmentDoc = gql`
   senderCompanyId
   senderRole
   communicationId
+}
+    `;
+export const CommunicationHeaderFragmentFragmentDoc = gql`
+    fragment CommunicationHeaderFragment on FilterInput {
+  id
+  type
+  label
+  name
+  options {
+    group
+    label
+    value: id
+  }
 }
     `;
 export const DashboardHeaderFragmentFragmentDoc = gql`
@@ -5730,10 +5883,12 @@ export const ClaimDetailsDocument = gql`
   claimJob(where: {id: $claimId}) {
     ...InfoCardDataFragment
     ...JobInfoTabFragment
+    ...ReportTabFragment
   }
 }
     ${InfoCardDataFragmentFragmentDoc}
-${JobInfoTabFragmentFragmentDoc}`;
+${JobInfoTabFragmentFragmentDoc}
+${ReportTabFragmentFragmentDoc}`;
 
 /**
  * __useClaimDetailsQuery__
@@ -5761,9 +5916,10 @@ export type ClaimDetailsQueryHookResult = ReturnType<typeof useClaimDetailsQuery
 export type ClaimDetailsLazyQueryHookResult = ReturnType<typeof useClaimDetailsLazyQuery>;
 export type ClaimDetailsQueryResult = ApolloReactCommon.QueryResult<ClaimDetailsQuery, ClaimDetailsQueryVariables>;
 export const JobInfoDocument = gql`
-    query JobInfo($managersWhere: ClaimJobFilter, $externalAdjustersWhere: ClaimJobFilter, $eventTypeWhere: ClaimJobFilter, $catCodesWhere: ClaimJobFilter, $policyTypesWhere: ClaimJobFilter, $policyCoversWhere: ClaimJobFilter, $internalAssessorsWhere: ClaimJobFilter, $whereQuotingBuilder: ClaimJobFilter) {
+    query JobInfo($managersWhere: ClaimJobFilter, $externalAdjustersWhere: ClaimJobFilter, $eventTypeWhere: ClaimJobFilter, $catCodesWhere: ClaimJobFilter, $policyTypesWhere: ClaimJobFilter, $policyCoversWhere: ClaimJobFilter, $internalAssessorsWhere: ClaimJobFilter, $whereQuotingBuilder: ClaimJobFilter, $whereQuotingRestorer: ClaimJobFilter) {
   ...JobInfo_ClaimDetailsCardFragment
   ...JobInfo_QuotingBuilderCardFragment
+  ...JobInfo_QuotingRestorerCardFragment
   _states @client {
     label @client
     value @client
@@ -5774,7 +5930,8 @@ export const JobInfoDocument = gql`
   }
 }
     ${JobInfo_ClaimDetailsCardFragmentFragmentDoc}
-${JobInfo_QuotingBuilderCardFragmentFragmentDoc}`;
+${JobInfo_QuotingBuilderCardFragmentFragmentDoc}
+${JobInfo_QuotingRestorerCardFragmentFragmentDoc}`;
 
 /**
  * __useJobInfoQuery__
@@ -5796,6 +5953,7 @@ ${JobInfo_QuotingBuilderCardFragmentFragmentDoc}`;
  *      policyCoversWhere: // value for 'policyCoversWhere'
  *      internalAssessorsWhere: // value for 'internalAssessorsWhere'
  *      whereQuotingBuilder: // value for 'whereQuotingBuilder'
+ *      whereQuotingRestorer: // value for 'whereQuotingRestorer'
  *   },
  * });
  */
@@ -5808,44 +5966,128 @@ export function useJobInfoLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type JobInfoQueryHookResult = ReturnType<typeof useJobInfoQuery>;
 export type JobInfoLazyQueryHookResult = ReturnType<typeof useJobInfoLazyQuery>;
 export type JobInfoQueryResult = ApolloReactCommon.QueryResult<JobInfoQuery, JobInfoQueryVariables>;
-export const ClaimListFiltersDocument = gql`
-    query ClaimListFilters {
-  claimFilters {
-    id
-    name
-    options {
-      group
-      label: name
-      value
+export const JobInfoTabUpdateDocument = gql`
+    mutation JobInfoTabUpdate($input: ClaimJobInput!, $where: ENDataEntityKey!) {
+  updateClaimJob(input: $input, where: $where) {
+    success
+    messages
+    fieldErrors {
+      fieldName
+      level
+      message
+    }
+  }
+}
+    `;
+export type JobInfoTabUpdateMutationFn = ApolloReactCommon.MutationFunction<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>;
+
+/**
+ * __useJobInfoTabUpdateMutation__
+ *
+ * To run a mutation, you first call `useJobInfoTabUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJobInfoTabUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [jobInfoTabUpdateMutation, { data, loading, error }] = useJobInfoTabUpdateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useJobInfoTabUpdateMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>) {
+        return ApolloReactHooks.useMutation<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>(JobInfoTabUpdateDocument, baseOptions);
+      }
+export type JobInfoTabUpdateMutationHookResult = ReturnType<typeof useJobInfoTabUpdateMutation>;
+export type JobInfoTabUpdateMutationResult = ApolloReactCommon.MutationResult<JobInfoTabUpdateMutation>;
+export type JobInfoTabUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>;
+export const ClaimListFilterDocument = gql`
+    query ClaimListFilter {
+  currentUser {
+    claimFilters {
+      id
+      type
+      label
+      name
+      options {
+        group
+        label
+        value: id
+      }
     }
   }
 }
     `;
 
 /**
- * __useClaimListFiltersQuery__
+ * __useClaimListFilterQuery__
  *
- * To run a query within a React component, call `useClaimListFiltersQuery` and pass it any options that fit your needs.
- * When your component renders, `useClaimListFiltersQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * To run a query within a React component, call `useClaimListFilterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useClaimListFilterQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useClaimListFiltersQuery({
+ * const { data, loading, error } = useClaimListFilterQuery({
  *   variables: {
  *   },
  * });
  */
-export function useClaimListFiltersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ClaimListFiltersQuery, ClaimListFiltersQueryVariables>) {
-        return ApolloReactHooks.useQuery<ClaimListFiltersQuery, ClaimListFiltersQueryVariables>(ClaimListFiltersDocument, baseOptions);
+export function useClaimListFilterQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ClaimListFilterQuery, ClaimListFilterQueryVariables>) {
+        return ApolloReactHooks.useQuery<ClaimListFilterQuery, ClaimListFilterQueryVariables>(ClaimListFilterDocument, baseOptions);
       }
-export function useClaimListFiltersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ClaimListFiltersQuery, ClaimListFiltersQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ClaimListFiltersQuery, ClaimListFiltersQueryVariables>(ClaimListFiltersDocument, baseOptions);
+export function useClaimListFilterLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ClaimListFilterQuery, ClaimListFilterQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ClaimListFilterQuery, ClaimListFilterQueryVariables>(ClaimListFilterDocument, baseOptions);
         }
-export type ClaimListFiltersQueryHookResult = ReturnType<typeof useClaimListFiltersQuery>;
-export type ClaimListFiltersLazyQueryHookResult = ReturnType<typeof useClaimListFiltersLazyQuery>;
-export type ClaimListFiltersQueryResult = ApolloReactCommon.QueryResult<ClaimListFiltersQuery, ClaimListFiltersQueryVariables>;
+export type ClaimListFilterQueryHookResult = ReturnType<typeof useClaimListFilterQuery>;
+export type ClaimListFilterLazyQueryHookResult = ReturnType<typeof useClaimListFilterLazyQuery>;
+export type ClaimListFilterQueryResult = ApolloReactCommon.QueryResult<ClaimListFilterQuery, ClaimListFilterQueryVariables>;
+export const ClaimListWaterfallFilterDocument = gql`
+    query ClaimListWaterfallFilter($where: ClaimStatusVolumeWhere!) {
+  currentUser {
+    waterfallFilters(where: $where) {
+      id
+      items {
+        value: id
+        label
+        claimCount
+        color
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useClaimListWaterfallFilterQuery__
+ *
+ * To run a query within a React component, call `useClaimListWaterfallFilterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useClaimListWaterfallFilterQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useClaimListWaterfallFilterQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useClaimListWaterfallFilterQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ClaimListWaterfallFilterQuery, ClaimListWaterfallFilterQueryVariables>) {
+        return ApolloReactHooks.useQuery<ClaimListWaterfallFilterQuery, ClaimListWaterfallFilterQueryVariables>(ClaimListWaterfallFilterDocument, baseOptions);
+      }
+export function useClaimListWaterfallFilterLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ClaimListWaterfallFilterQuery, ClaimListWaterfallFilterQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ClaimListWaterfallFilterQuery, ClaimListWaterfallFilterQueryVariables>(ClaimListWaterfallFilterDocument, baseOptions);
+        }
+export type ClaimListWaterfallFilterQueryHookResult = ReturnType<typeof useClaimListWaterfallFilterQuery>;
+export type ClaimListWaterfallFilterLazyQueryHookResult = ReturnType<typeof useClaimListWaterfallFilterLazyQuery>;
+export type ClaimListWaterfallFilterQueryResult = ApolloReactCommon.QueryResult<ClaimListWaterfallFilterQuery, ClaimListWaterfallFilterQueryVariables>;
 export const ClaimListDataDocument = gql`
     query ClaimListData($first: Int, $after: String, $where: ClaimJobFilter) {
   currentUser {
@@ -5961,17 +6203,13 @@ export type CommunicationActionReplyMutationResult = ApolloReactCommon.MutationR
 export type CommunicationActionReplyMutationOptions = ApolloReactCommon.BaseMutationOptions<CommunicationActionReplyMutation, CommunicationActionReplyMutationVariables>;
 export const CommunicationListFiltersDocument = gql`
     query CommunicationListFilters {
-  communicationFilters {
-    id
-    name
-    options {
-      group
-      label: name
-      value
+  currentUser {
+    communicationFilters {
+      ...CommunicationHeaderFragment
     }
   }
 }
-    `;
+    ${CommunicationHeaderFragmentFragmentDoc}`;
 
 /**
  * __useCommunicationListFiltersQuery__

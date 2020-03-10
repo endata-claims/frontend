@@ -6,20 +6,8 @@ import ClaimListBody from './ClaimListBody'
 import ClaimListFloatActions from './ClaimListFloatActions'
 
 import fetchMorePagination from 'utils/fetchMorePagination'
-import { useClaimListFiltersQuery, useClaimListDataQuery } from 'generated/graphql'
-gql`
-  query ClaimListFilters {
-    claimFilters {
-      id
-      name
-      options {
-        group
-        label: name
-        value
-      }
-    }
-  }
-`
+import { useClaimListDataQuery } from 'generated/graphql'
+
 gql`
   query ClaimListData($first: Int, $after: String, $where: ClaimJobFilter) {
     currentUser {
@@ -46,23 +34,21 @@ gql`
 `
 
 export default () => {
-  const { data: filterData, loading: filterLoading } = useClaimListFiltersQuery()
   const [filterValues, setFilterValues] = React.useState()
-  const filters = React.useMemo(() => filterData?.claimFilters?.map((filter: any) => ({
-    type: 'Autocomplete',
-    label: filter.name,
-    name: filter.id,
-    options: filter.options
-  })), [filterData])
+  const [waterfallStatus, setWaterfallStatus] = React.useState()
+  const filterWhere = filterValues && Object.fromEntries(Object.entries(filterValues).filter(([key, value]) => value))
+  const where ={
+    ...filterWhere,
+    claimStatusStageIds: waterfallStatus
+  }
 
-  const where = filterValues && Object.fromEntries(Object.entries(filterValues).filter(([key, value]) => value))
   const { data: claimData, loading: claimLoading, fetchMore } = useClaimListDataQuery({
     variables: {
       where,
       first: 20,
       after: null,
     },
-    skip: filterLoading,
+    // skip: filterLoading,
   })
 
   const onLoadMoreClaims = () => {
@@ -78,7 +64,12 @@ export default () => {
   return (
     <>
       <PageLayout
-        header={<ClaimListHeader filters={filters} setFilterValues={setFilterValues} loading={filterLoading} />}
+        header={(
+          <ClaimListHeader
+            filterWhere={filterWhere} setFilterValues={setFilterValues}
+            waterfallStatus={waterfallStatus} setWaterfallStatus={setWaterfallStatus}
+          />
+        )}
         body={<ClaimListBody data={claimData} loading={claimLoading} onLoadMoreClaims={onLoadMoreClaims} />}
       />
       <ClaimListFloatActions />

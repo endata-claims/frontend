@@ -2,8 +2,8 @@ import React from 'react'
 
 import { ComboBoxFieldOption } from 'components/Formik/ComboBoxField'
 
-import TextField from 'components/Formik/TextField'
-const ComboBoxField = React.lazy(() => import('components/Formik/ComboBoxField'))
+// import TextField from 'components/Formik/TextField'
+// const ComboBoxField = React.lazy(() => import('components/Formik/ComboBoxField'))
 
 export interface FilterProps {
   type: string // 'Select'
@@ -27,22 +27,22 @@ const FilterWrapper: React.FC<FilterProps> = (props) => {
   )
 }
 const Filter: React.FC<FilterProps> = ({ type, ...props }) => {
-  // const Comp = React.useMemo(() => React.lazy(() => import(`components/Formik/${type}Field`)), [type])
-  // if(!Comp) return null
+  const Comp = React.useMemo(() => React.lazy(() => import(`components/Formik/${type}Field`)), [type])
+  if(!Comp) return null
 
-  // return (
-  //   <Comp {...props} />
-  // )
+  return (
+    <Comp {...props} />
+  )
 
-  switch (type) {
-    case 'ComboBox': return (
-      <ComboBoxField {...props} />
-    )
+  // switch (type) {
+  //   case 'ComboBox': return (
+  //     <ComboBoxField {...props} />
+  //   )
 
-    default: return (
-      <TextField {...props} />
-    )
-  }
+  //   default: return (
+  //     <TextField {...props} />
+  //   )
+  // }
 }
 
 export default FilterWrapper

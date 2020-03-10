@@ -5,6 +5,8 @@ import Filter, { FilterProps } from './Filter'
 import { Grid, Collapse, IconButton, CircularProgress } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
 interface FilterGroupProps {
   loading?: boolean
@@ -12,8 +14,10 @@ interface FilterGroupProps {
   filters?: FilterProps[]
   filterRender?: (Component: any, props: any, index: number) => React.ReactElement
   onChange?: (values: any) => void
+
+  SubView?: any
 }
-const FilterGroup: React.FC<FilterGroupProps> = ({ filters, loading, ...props }) => {
+const FilterGroup: React.FC<FilterGroupProps> = ({ filters, loading, onChange, ...props }) => {
   if(loading) return (
     <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <CircularProgress />
@@ -22,13 +26,15 @@ const FilterGroup: React.FC<FilterGroupProps> = ({ filters, loading, ...props })
 
   if (!filters) return null
   const initialValues = filters ? getInitialValues(filters) : {}
-  console.log(initialValues)
 
   return (
     <Formik
       initialValues={initialValues}
+      validate={values => {
+        if(values && onChange) onChange(values)
+      }}
       onSubmit={values => {
-        console.log(values)
+        // console.log(values)
       }}
     >
       {({ values }) => (
@@ -43,14 +49,14 @@ export default FilterGroup
 interface FilterGroupDisplayProps extends FilterGroupProps {
   values: any
 }
-const FilterGroupDisplay: React.FC<FilterGroupDisplayProps> = ({ values, filters, filterRender, firstRowFilters = 6, onChange }) => {
+const FilterGroupDisplay: React.FC<FilterGroupDisplayProps> = ({
+  filters,
+  filterRender,
+  firstRowFilters = 6,
+  SubView
+}) => {
   const [filterMore, setFilterMore] = React.useState(false)
-
-  const changed = Object.values(values).join(', ')
-  React.useEffect(() => {
-    if (onChange) onChange(values)
-    // eslint-disable-next-line
-  }, [changed])
+  const [isSubview, setIsSubView] = React.useState(false)
 
   if(!filters) return null
 
@@ -67,27 +73,50 @@ const FilterGroupDisplay: React.FC<FilterGroupDisplayProps> = ({ values, filters
     <Form style={{ width: '100%' }}>
       <Grid container justify='center' alignItems='flex-start'>
         <Grid item xs container>
-          <Grid container spacing={2}>
-            {firstRow.map(renderFilter)}
-          </Grid>
-          {secondRow.length ? (
-            <Collapse in={filterMore} timeout='auto' unmountOnExit style={{ width: '100%' }}>
-              <Grid container spacing={2} style={{ marginTop: 8 }}>
-                {secondRow.map((filter, index) => renderFilter(filter, index + firstRowFilters))}
-              </Grid>
-            </Collapse>
-          ) : null}
+          {!isSubview
+            ? (
+              <>
+                <Grid container spacing={2}>
+                  {firstRow.map(renderFilter)}
+                </Grid>
+                {secondRow.length ? (
+                  <Collapse in={filterMore} timeout='auto' unmountOnExit style={{ width: '100%' }}>
+                    <Grid container spacing={2} style={{ marginTop: 8 }}>
+                      {secondRow.map((filter, index) => renderFilter(filter, index + firstRowFilters))}
+                    </Grid>
+                  </Collapse>
+                ) : null}
+              </>
+            )
+            : (
+              <>{SubView}</>
+            )
+          }
         </Grid>
         <Grid
           item container
-          direction='column' justify='center' alignContent='center'
+          direction='column'
+          // justify='center'
+          alignItems='center'
           style={{ width: 88, padding: 8 }}
         >
-          {secondRow.length ? (
-            <IconButton onClick={() => setFilterMore(pre => !pre)} style={{ padding: 6, marginLeft: 'auto' }}>
-              {filterMore ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-            </IconButton>
-          ) : null}
+          <Grid item xs>
+            {SubView && (
+              <IconButton
+                style={{ padding: 6, marginLeft: 'auto' }}
+                onClick={() => setIsSubView(pre => !pre)}
+              >
+                {isSubview ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            )}
+          </Grid>
+          <Grid item xs>
+            {(!isSubview && secondRow.length) ? (
+              <IconButton onClick={() => setFilterMore(pre => !pre)} style={{ padding: 6, marginLeft: 'auto' }}>
+                {filterMore ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            ) : null}
+          </Grid>
         </Grid>
       </Grid>
     </Form>

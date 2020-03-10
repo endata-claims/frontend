@@ -4,7 +4,7 @@ import { gql } from '@apollo/client'
 import TabLayout from 'layouts/TabLayout'
 import { CircularProgress, Grid } from '@material-ui/core'
 import { Formik, Form } from 'formik'
-import { ClaimDetailsQuery, useJobInfoQuery, PortfolioType } from 'generated/graphql'
+import { ClaimDetailsQuery, useJobInfoQuery, PortfolioType, useJobInfoTabUpdateMutation } from 'generated/graphql'
 
 import ClaimDetailsCard from './ClaimDetailsCard'
 import CustomerInfoCard from './CustomerInfoCard'
@@ -12,6 +12,9 @@ import PostalAddressCard from './PostalAddressCard'
 import TenantInfoCard from './TenantInfoCard'
 import ClaimDescriptionCard from './ClaimDescriptionCard'
 import QuotingBuilderCard from './QuotingBuilderCard'
+import QuotingRestorerCard from './QuotingRestorerCard'
+import { useClaimMeta } from '../../ClaimMetaContext'
+import { useSnackbar } from 'notistack'
 
 gql`
   fragment JobInfoTabFragment on ClaimJob {
@@ -88,9 +91,11 @@ gql`
     $policyCoversWhere: ClaimJobFilter
     $internalAssessorsWhere: ClaimJobFilter
     $whereQuotingBuilder: ClaimJobFilter
+    $whereQuotingRestorer: ClaimJobFilter
   ) {
     ...JobInfo_ClaimDetailsCardFragment
     ...JobInfo_QuotingBuilderCardFragment
+    ...JobInfo_QuotingRestorerCardFragment
     _states @client {
       label @client
       value @client
@@ -102,11 +107,29 @@ gql`
   }
 `
 
+gql`
+  mutation JobInfoTabUpdate($input: ClaimJobInput!, $where: ENDataEntityKey!) {
+    updateClaimJob(input: $input, where: $where) {
+      success
+      messages
+      fieldErrors {
+        fieldName
+        level
+        message
+      }
+    }
+  }
+`
+
 type JobInfoProps = {
   data?: ClaimDetailsQuery
   loading: boolean
 }
 export default ({ data, loading }: JobInfoProps) => {
+  const [updateClaim] = useJobInfoTabUpdateMutation()
+  const claimMeta = useClaimMeta()
+  const { enqueueSnackbar } = useSnackbar()
+
   const insurerId = String(data?.claimJob?.insurer?.companyId ?? 0)
   const { data: optionData } = useJobInfoQuery({ // loading: optionLoading
     variables: {
@@ -122,6 +145,12 @@ export default ({ data, loading }: JobInfoProps) => {
         portfolios: [PortfolioType.Building],
         insurers: [insurerId],
         postcode: data?.claimJob?.incidentDetail?.riskAddress?.postcode
+      },
+      whereQuotingRestorer: {
+        subject: 'suppliers',
+        portfolios: [PortfolioType.Restoration],
+        insurers: [insurerId],
+        postcode: data?.claimJob?.incidentDetail?.riskAddress?.postcode
       }
     }
   })
@@ -131,7 +160,6 @@ export default ({ data, loading }: JobInfoProps) => {
 
   const riskAddress = claim?.incidentDetail?.riskAddress
   const postalAddress = claim?.insured?.postalAddress
-  console.log(claim)
 
   return (
     <Formik
@@ -148,6 +176,7 @@ export default ({ data, loading }: JobInfoProps) => {
             toCollectExcess: claim?.building?.toCollectExcess ?? null,
             excessValue: claim?.building?.excessValue ?? 0,
             sumInsured: claim?.building?.sumInsured ?? 0,
+            quotingSupplierIds: [],
           },
           {
             portfolioType: 'Contents',
@@ -160,6 +189,7 @@ export default ({ data, loading }: JobInfoProps) => {
             toCollectExcess: claim?.restoration?.toCollectExcess ?? null,
             excessValue: claim?.restoration?.excessValue ?? 0,
             sumInsured: claim?.restoration?.sumInsured ?? 0,
+            quotingSupplierIds: [],
           },
         ],
         incidentDate: parse(claim?.incidentDetail?.incidentDate, 'dd/MM/yyyy', new Date()),
@@ -201,11 +231,22 @@ export default ({ data, loading }: JobInfoProps) => {
         tenantPhone2: claim?.tenantDetails?.phone2,
         tenantPhone3: claim?.tenantDetails?.phone3,
         claimDescription: claim?.claimDescription || '',
-        quotingBuilder: [],
-        quotingRestorer: [],
       }}
-      onSubmit={values => {
-        console.log(values)
+      onSubmit={async values => {
+        const input = (({ meta, ...rest }) => rest)(values)
+
+        const variables = {
+          where: {
+            id: claim?.id
+          },
+          input
+        }
+
+        // @ts-ignore
+        const res = await updateClaim({ variables })
+        if (res.data?.updateClaimJob?.messages) enqueueSnackbar(res.data.updateClaimJob.messages[0])
+
+        if (res.data?.updateClaimJob?.success) claimMeta?.claimDetailsRefetch()
       }}
     >
       <Form>
@@ -222,6 +263,7 @@ export default ({ data, loading }: JobInfoProps) => {
                 { xs: 6, card: <TenantInfoCard /> },
                 { card: <ClaimDescriptionCard /> },
                 { xs: 6, card: <QuotingBuilderCard claim={claim} optionData={optionData} /> },
+                { xs: 6, card: <QuotingRestorerCard claim={claim} optionData={optionData} /> },
               ].map(({ xs = 12, card }: any) => (
                 <Grid item xs={xs}>
                   {card}

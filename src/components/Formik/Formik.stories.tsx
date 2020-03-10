@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik'
 import { Grid, Typography, Paper } from '@material-ui/core'
 import YouTubeIcon from '@material-ui/icons/YouTube'
 
-import InfoField from '../FormikCustom/InfoField'
+import InfoField from './InfoField'
 import MoneyField from '../FormikCustom/MoneyField'
 import PhoneField from '../FormikCustom/PhoneField'
 import PostcodeField from '../FormikCustom/PostcodeField'

@@ -3,7 +3,7 @@ import Paper from 'components/Paper'
 import { Grid } from '@material-ui/core'
 
 import renderField from './renderField'
-import InfoField from 'components/FormikCustom/InfoField'
+import InfoField from 'components/Formik/InfoField'
 import DateField from 'components/Formik/DateField'
 import ComboBoxField from 'components/Formik/ComboBoxField'
 import RefNumberField from 'components/FormikCustom/RefNumberField'

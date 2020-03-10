@@ -8,8 +8,8 @@ import CheckboxGroupField from 'components/Formik/CheckboxGroupField'
 import { gql } from '@apollo/client'
 import { JobInfoQuery } from 'generated/graphql'
 gql`
-  fragment JobInfo_QuotingBuilderCardFragment on Query {
-    quotingBuilders: claimFilterOptions(where: $whereQuotingBuilder) {
+  fragment JobInfo_QuotingRestorerCardFragment on Query {
+    quotingRestorers: claimFilterOptions(where: $whereQuotingRestorer) {
       label: name
       value
     }
@@ -23,7 +23,7 @@ type ClaimDetailsCardProps = {
 export default ({ optionData, claim }: ClaimDetailsCardProps) => {
   // TODO: change to strict compare !== when the api is fixed
   // eslint-disable-next-line
-  const options = optionData?.quotingBuilders?.filter(option => option?.value != claim?.building?.scopingSupplier?.companyId)
+  const options = optionData?.quotingRestorers?.filter(option => option?.value != claim?.restoration?.scopingSupplier?.companyId)
 
   return (
     <Paper title='Quoting Builders'>
@@ -32,7 +32,7 @@ export default ({ optionData, claim }: ClaimDetailsCardProps) => {
           {
             xs: 12,
             component: CheckboxGroupField,
-            name: 'portfolios[0].quotingSupplierIds',
+            name: 'portfolios[2].quotingSupplierIds',
             options: options,
             maxHeight: '12rem'
           },

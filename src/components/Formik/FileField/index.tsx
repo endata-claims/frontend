@@ -29,6 +29,7 @@ const FileField: React.FC<FileFieldProps> = ({ disabled, readOnly, required, lab
       validate={(file: any) => {
         if (!isDisabled && required && !file) return 'Required!'
 
+        if(!file) return ''
         const { name, size } = file
 
         const extension = `.${name.split('.')[name.split('.').length - 1]}`.toUpperCase()

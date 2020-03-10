@@ -8,9 +8,10 @@ import ClaimDetailsCard from './ClaimDetailsCard'
 import QuotingBuildersCard from './QuotingBuildersCard'
 import QuotingRestorersCard from './QuotingRestorersCard'
 import ClaimDescriptionCard from './ClaimDescriptionCard'
+import lodash from 'lodash'
 
 import gql from 'graphql-tag'
-import { useAddClaimRootQuery, PortfolioType } from 'generated/graphql' // useAddClaimMutation
+import { useAddClaimRootQuery, PortfolioType, useAddClaimMutation } from 'generated/graphql'
 
 gql`
   mutation AddClaim($input: ClaimJobCreate!) {
@@ -31,9 +32,9 @@ gql`
 
 export default () => {
   const { id } = useParams()
-  const companyId = id ? parseInt(id) : 0
+  const companyId = id ? id : '0'
 
-  // const [addClaim] = useAddClaimMutation()
+  const [addClaim] = useAddClaimMutation()
 
   return (
     <Formik
@@ -126,12 +127,11 @@ export default () => {
         return errors
       }}
       onSubmit={async (values, { setSubmitting }) => {
-        console.log(values)
-
-        const input = (({ meta, ...props }) => ({ ...props }))(values)
-        console.log(input)
+        const input = (({ meta, ...props }) => ({ ...props }))(values) as any
+        // const cleanInput = lodash.pickBy(input)
+        const res = await addClaim({ variables: { input }})
         // const res = await addClaim({ variables: { input: values }})
-        // console.log(res)
+        console.log(res)
         setSubmitting(false)
       }}
       validateOnChange={false}

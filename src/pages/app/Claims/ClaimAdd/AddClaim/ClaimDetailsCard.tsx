@@ -5,7 +5,7 @@ import { gql } from '@apollo/client'
 
 import renderField from './renderField'
 import DateField from 'components/Formik/DateField'
-import InfoField from 'components/FormikCustom/InfoField'
+import InfoField from 'components/Formik/InfoField'
 import ComboBoxField from 'components/Formik/ComboBoxField'
 import SwitchField from 'components/Formik/SwitchField'
 import RefNumberField from 'components/FormikCustom/RefNumberField'

@@ -28,7 +28,7 @@ const ComboBoxField: React.FC<ComboBoxFieldProps> = ({ options = [], name, multi
   const [field, meta, helpers] = useField(name)
   const [value, setValue] = React.useState<any>('')
   const fieldValue = field.value
-  // const optionString = JSON.stringify(options)
+  const optionString = JSON.stringify(options)
   React.useEffect(() => {
     if(options && options.length) {
       // TODO
@@ -41,7 +41,7 @@ const ComboBoxField: React.FC<ComboBoxFieldProps> = ({ options = [], name, multi
       setValue(currentValue)
     }
     // eslint-disable-next-line
-  }, [fieldValue, multiple]) // optionString
+  }, [fieldValue, multiple, optionString]) // optionString
   const handleValueChange = (e: any, selected: any) => {
     if (!selected) return helpers.setValue('')
 
@@ -86,7 +86,7 @@ const ComboBoxField: React.FC<ComboBoxFieldProps> = ({ options = [], name, multi
             error={isError}
             helperText={isError ? error : null}
             fullWidth={fullWidth}
-            {...field}
+            // {...field}
             {...props}
             {...params}
             InputProps={{

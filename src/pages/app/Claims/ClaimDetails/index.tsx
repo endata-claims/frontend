@@ -15,6 +15,7 @@ gql`
     claimJob(where: { id: $claimId }) {
       ...InfoCardDataFragment
       ...JobInfoTabFragment
+      ...ReportTabFragment
     }
   }
 `
@@ -22,6 +23,7 @@ gql`
 const routes = [
   { label: 'Job Info', path: '/job-info', component: 'JobInfo' },
   { label: 'Make Safe', path: '/make-safe', component: 'MakeSafe' },
+  { label: 'Report', path: '/report', component: 'Report' },
 ].map(({ component, ...args }) => ({ ...args, component: React.lazy(() => import(`./tabs/${component}`)) }))
 
 export default () => {

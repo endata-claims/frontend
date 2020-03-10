@@ -14,7 +14,7 @@ type CustomerInfoCardProps = {
   optionData?: JobInfoQuery
 }
 export default ({ optionData }: CustomerInfoCardProps) => {
-  const { values, setFieldValue } = useFormikContext() // setTouched
+  const { values, setFieldValue, isSubmitting } = useFormikContext() // setTouched
   const formValues = values as any
 
   const claimMeta = useClaimMeta()
@@ -29,7 +29,7 @@ export default ({ optionData }: CustomerInfoCardProps) => {
   }
 
   return (
-    <Paper title='Customer & Property Information'>
+    <Paper title='Postal Address'>
       <Grid container spacing={3}>
         {[
           {
@@ -45,6 +45,7 @@ export default ({ optionData }: CustomerInfoCardProps) => {
               variant='outlined' color='primary' fullWidth
               startIcon={<FileCopyIcon />}
               onClick={handleSameAddress}
+              disabled={isSubmitting}
             >
               Same Address
           </Button>

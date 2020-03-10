@@ -6,15 +6,12 @@ import CommunicationsBody from './CommunicationsBody'
 import fetchMorePagination from 'utils/fetchMorePagination'
 
 import { useCommunicationListFiltersQuery, useCommunicationsDataQuery, ClaimCommunicationBox } from 'generated/graphql'
+import { FilterProps } from 'layouts/FilterGroup/Filter'
 gql`
   query CommunicationListFilters {
-    communicationFilters {
-      id
-      name
-      options {
-        group
-        label: name
-        value
+    currentUser {
+      communicationFilters {
+        ...CommunicationHeaderFragment
       }
     }
   }
@@ -43,12 +40,21 @@ gql`
 export default () => {
   const { data: filterData, loading: filterLoading } = useCommunicationListFiltersQuery()
   const [filterValues, setFilterValues] = React.useState()
-  const filters = React.useMemo(() => filterData?.communicationFilters?.map((filter: any) => ({
-    type: 'Autocomplete',
-    label: filter.name,
-    name: filter.id,
-    options: filter.options
-  })), [filterData])
+
+  const communicationFilters = filterData?.currentUser?.communicationFilters
+  const filterString = JSON.stringify(communicationFilters)
+  const filters = React.useMemo(() => communicationFilters?.map(props => {
+    // @ts-ignore
+    const [type, multiple]: [string, string] = props?.type?.split('_')
+
+    return {
+      ...props,
+      type,
+      multiple: multiple ? true : false
+    }
+  // TODO
+  // eslint-disable-next-line
+  }), [filterString]) as FilterProps[]
 
   const mappedWhere = filterValues && Object.fromEntries(Object.entries(filterValues).filter(([key, value]) => value))
   const where = {

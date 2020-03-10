@@ -61,6 +61,8 @@ export default () => {
       type,
       multiple: multiple ? true : false
     }
+  // TODO
+  // eslint-disable-next-line
   }), [dashboardFilterString]) as FilterProps[]
 
   const role = filterData?.currentUser?.userType
@@ -70,7 +72,6 @@ export default () => {
       1
 
   const mappedWhere = filterValues && Object.fromEntries(Object.entries(filterValues).filter(([, value]) => value))
-  console.log(mappedWhere)
   const where = {
     filter: mappedWhere,
     dashboardId

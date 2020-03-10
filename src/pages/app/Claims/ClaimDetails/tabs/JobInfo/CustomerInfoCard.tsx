@@ -16,6 +16,7 @@ import DoneIcon from '@material-ui/icons/Done'
 
 import { gql } from '@apollo/client'
 import { JobInfoQuery } from 'generated/graphql'
+import { useFormikContext } from 'formik'
 gql`
   fragment JobInfo_CustomerInfoCardMetaFragment on ClaimJob {
     insurer {
@@ -37,6 +38,8 @@ type CustomerInfoCardProps = {
 export default ({ optionData }: CustomerInfoCardProps) => {
   const claimMeta = useClaimMeta()
   const cashSettleAction = claimMeta?.claim?.actions?.find(action => action?.actionType === 'CLAIM_CASH_SETTLE')
+
+  const { isSubmitting } = useFormikContext()
 
   return (
     <Paper title='Customer & Property Information'>
@@ -152,10 +155,14 @@ export default ({ optionData }: CustomerInfoCardProps) => {
             }
           },
           { xs: 2 }
-        ].map(({ xs = 2, label, ...props }) => (
+        ].map(({ xs = 2, label, disabled, ...props }) => (
           <Grid item xs={2} style={{ display: 'flex' }}>
             {label && (
-              <Button variant='outlined' color='primary' fullWidth {...props}>
+              <Button
+                variant='outlined' color='primary' fullWidth
+                disabled={disabled || isSubmitting}
+                {...props}
+              >
                 {label}
               </Button>
             )}
