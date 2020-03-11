@@ -9,14 +9,14 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  Grid: any,
+  Json: any,
   Date: any,
   DateString: any,
   DateTimeString: any,
   Byte: any,
   Decimal: any,
   Short: any,
-  Json: any,
-  Grid: any,
   PersonName: any,
   Phone: any,
   Email: any,
@@ -78,7 +78,7 @@ export enum ActionType {
 }
 
 export type AddPortfolioInput = {
-  scopingSupplierId?: Maybe<Scalars['Int']>,
+  scopingSupplierId?: Maybe<Scalars['ID']>,
   portfolioType: PortfolioType,
 };
 
@@ -406,7 +406,7 @@ export type ClaimJob = {
   policyCover?: Maybe<PolicyCover>,
   policyType?: Maybe<PolicyType>,
   refNumber: Scalars['String'],
-  reportData?: Maybe<Scalars['Json']>,
+  reportData?: Maybe<Report>,
   reportForm?: Maybe<Form>,
   reportFormId?: Maybe<Scalars['ID']>,
   requireCustomLogin?: Maybe<Scalars['Boolean']>,
@@ -766,19 +766,19 @@ export type ClaimPortfolioCreate = {
   sumInsured: Scalars['Int'],
   excessValue: Scalars['Int'],
   toCollectExcess: Scalars['Boolean'],
-  scopingSupplierId: Scalars['Int'],
-  quotingSupplierIds?: Maybe<Array<Maybe<Scalars['Int']>>>,
+  scopingSupplierId: Scalars['ID'],
+  quotingSupplierIds?: Maybe<Array<Scalars['ID']>>,
 };
 
 export type ClaimPortfolioInput = {
   portfolioType: PortfolioType,
-  policyCoverId?: Maybe<Scalars['Int']>,
-  policyTypeId?: Maybe<Scalars['Int']>,
+  policyCoverId?: Maybe<Scalars['ID']>,
+  policyTypeId?: Maybe<Scalars['ID']>,
   description?: Maybe<Scalars['String']>,
   sumInsured?: Maybe<Scalars['Int']>,
   excessValue?: Maybe<Scalars['Int']>,
   toCollectExcess?: Maybe<Scalars['Boolean']>,
-  quotingSupplierIds?: Maybe<Array<Maybe<Scalars['Int']>>>,
+  quotingSupplierIds?: Maybe<Array<Scalars['ID']>>,
 };
 
 export type ClaimPortfolioPayload = {
@@ -2211,6 +2211,9 @@ export type Mutation = {
   userLogout?: Maybe<GeneralPayload>,
   userRenewToken?: Maybe<UserValidation>,
   userServiceToken?: Maybe<ServiceValidation>,
+  claimReportUpsert: Report,
+  claimReportSubmit: Report,
+  claimReportReset: Report,
 };
 
 
@@ -2634,6 +2637,22 @@ export type MutationUserServiceTokenArgs = {
   input: ServiceInput
 };
 
+
+export type MutationClaimReportUpsertArgs = {
+  claimId: Scalars['ID'],
+  data: Scalars['Json']
+};
+
+
+export type MutationClaimReportSubmitArgs = {
+  claimId: Scalars['ID']
+};
+
+
+export type MutationClaimReportResetArgs = {
+  claimId: Scalars['ID']
+};
+
 export type PageInfo = {
    __typename?: 'PageInfo',
   endCursor?: Maybe<Scalars['String']>,
@@ -2708,6 +2727,8 @@ export type PrivilegePage = {
 export type Query = {
    __typename?: 'Query',
   _claimCategories: Array<Maybe<SelectOption>>,
+  _form?: Maybe<Form>,
+  _report?: Maybe<Report>,
   _states: Array<Maybe<SelectOption>>,
   claimCommuications?: Maybe<ClaimCommunicationConnection>,
   claimDocuments?: Maybe<ClaimDocumentConnection>,
@@ -2732,7 +2753,6 @@ export type Query = {
   feeItem?: Maybe<FeeItem>,
   feeItems?: Maybe<Array<Maybe<FeeItem>>>,
   feePortfolios?: Maybe<Array<Maybe<FeePortfolio>>>,
-  form?: Maybe<Form>,
   internalAssessors?: Maybe<InternalAssesorConnection>,
   jobMakeSafes?: Maybe<JobMakeSafeConnection>,
   jobQuotes?: Maybe<JobQuoteConnection>,
@@ -2751,6 +2771,16 @@ export type Query = {
   specialistRequests?: Maybe<Array<Maybe<SpecialistRequest>>>,
   specialists?: Maybe<Array<Maybe<Company>>>,
   supervisors?: Maybe<SupervisorConnection>,
+};
+
+
+export type Query_FormArgs = {
+  id: Scalars['ID']
+};
+
+
+export type Query_ReportArgs = {
+  claimId: Scalars['ID']
 };
 
 
@@ -2853,11 +2883,6 @@ export type QueryFeeItemsArgs = {
 
 export type QueryFeePortfoliosArgs = {
   where: ClaimPortfoliosWhere
-};
-
-
-export type QueryFormArgs = {
-  id: Scalars['ID']
 };
 
 
@@ -3110,6 +3135,18 @@ export type ReallocateScopingSupplierInput = {
   availableForQuoting: Scalars['Boolean'],
   note?: Maybe<Scalars['String']>,
 };
+
+export type Report = {
+   __typename?: 'Report',
+  id: Scalars['ID'],
+  data?: Maybe<Scalars['Json']>,
+  status: ReportStatus,
+};
+
+export enum ReportStatus {
+  Reporting = 'REPORTING',
+  Reported = 'REPORTED'
+}
 
 export enum RequestCategory {
   All = 'All',
@@ -3597,7 +3634,7 @@ export type AddClaimMutation = (
       & Pick<EntityFieldError, 'fieldName' | 'level' | 'message'>
     )>>>, result: Maybe<(
       { __typename?: 'ClaimJob' }
-      & Pick<ClaimJob, 'claimId'>
+      & Pick<ClaimJob, 'id' | 'claimId'>
     )> }
   )> }
 );
@@ -4179,6 +4216,7 @@ export type FormCardFragmentFragment = (
 
 export type ReportTabFragmentFragment = (
   { __typename?: 'ClaimJob' }
+  & Pick<ClaimJob, 'id'>
   & { reportForm: Maybe<(
     { __typename?: 'Form' }
     & Pick<Form, 'title'>
@@ -4187,7 +4225,50 @@ export type ReportTabFragmentFragment = (
       & Pick<Card, 'id'>
       & FormCardFragmentFragment
     )>> }
+  )>, reportData: Maybe<(
+    { __typename?: 'Report' }
+    & Pick<Report, 'data' | 'status'>
   )> }
+);
+
+export type SaveReportMutationVariables = {
+  claimId: Scalars['ID'],
+  data: Scalars['Json']
+};
+
+
+export type SaveReportMutation = (
+  { __typename?: 'Mutation' }
+  & { claimReportUpsert: (
+    { __typename?: 'Report' }
+    & Pick<Report, 'id'>
+  ) }
+);
+
+export type SubmitReportMutationVariables = {
+  claimId: Scalars['ID']
+};
+
+
+export type SubmitReportMutation = (
+  { __typename?: 'Mutation' }
+  & { claimReportSubmit: (
+    { __typename?: 'Report' }
+    & Pick<Report, 'id'>
+  ) }
+);
+
+export type ResetReportMutationVariables = {
+  claimId: Scalars['ID']
+};
+
+
+export type ResetReportMutation = (
+  { __typename?: 'Mutation' }
+  & { claimReportReset: (
+    { __typename?: 'Report' }
+    & Pick<Report, 'id'>
+  ) }
 );
 
 export type ClaimListBodyFragment = (
@@ -5148,12 +5229,17 @@ export const FormCardFragmentFragmentDoc = gql`
     `;
 export const ReportTabFragmentFragmentDoc = gql`
     fragment ReportTabFragment on ClaimJob {
+  id
   reportForm {
     title
     cards {
       id
       ...FormCardFragment
     }
+  }
+  reportData {
+    data
+    status
   }
 }
     ${FormCardFragmentFragmentDoc}`;
@@ -5473,6 +5559,7 @@ export const AddClaimDocument = gql`
       message
     }
     result {
+      id
       claimId
     }
   }
@@ -6005,6 +6092,103 @@ export function useJobInfoTabUpdateMutation(baseOptions?: ApolloReactHooks.Mutat
 export type JobInfoTabUpdateMutationHookResult = ReturnType<typeof useJobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationResult = ApolloReactCommon.MutationResult<JobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>;
+export const SaveReportDocument = gql`
+    mutation SaveReport($claimId: ID!, $data: Json!) {
+  claimReportUpsert(claimId: $claimId, data: $data) {
+    id
+  }
+}
+    `;
+export type SaveReportMutationFn = ApolloReactCommon.MutationFunction<SaveReportMutation, SaveReportMutationVariables>;
+
+/**
+ * __useSaveReportMutation__
+ *
+ * To run a mutation, you first call `useSaveReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveReportMutation, { data, loading, error }] = useSaveReportMutation({
+ *   variables: {
+ *      claimId: // value for 'claimId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSaveReportMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SaveReportMutation, SaveReportMutationVariables>) {
+        return ApolloReactHooks.useMutation<SaveReportMutation, SaveReportMutationVariables>(SaveReportDocument, baseOptions);
+      }
+export type SaveReportMutationHookResult = ReturnType<typeof useSaveReportMutation>;
+export type SaveReportMutationResult = ApolloReactCommon.MutationResult<SaveReportMutation>;
+export type SaveReportMutationOptions = ApolloReactCommon.BaseMutationOptions<SaveReportMutation, SaveReportMutationVariables>;
+export const SubmitReportDocument = gql`
+    mutation SubmitReport($claimId: ID!) {
+  claimReportSubmit(claimId: $claimId) {
+    id
+  }
+}
+    `;
+export type SubmitReportMutationFn = ApolloReactCommon.MutationFunction<SubmitReportMutation, SubmitReportMutationVariables>;
+
+/**
+ * __useSubmitReportMutation__
+ *
+ * To run a mutation, you first call `useSubmitReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitReportMutation, { data, loading, error }] = useSubmitReportMutation({
+ *   variables: {
+ *      claimId: // value for 'claimId'
+ *   },
+ * });
+ */
+export function useSubmitReportMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SubmitReportMutation, SubmitReportMutationVariables>) {
+        return ApolloReactHooks.useMutation<SubmitReportMutation, SubmitReportMutationVariables>(SubmitReportDocument, baseOptions);
+      }
+export type SubmitReportMutationHookResult = ReturnType<typeof useSubmitReportMutation>;
+export type SubmitReportMutationResult = ApolloReactCommon.MutationResult<SubmitReportMutation>;
+export type SubmitReportMutationOptions = ApolloReactCommon.BaseMutationOptions<SubmitReportMutation, SubmitReportMutationVariables>;
+export const ResetReportDocument = gql`
+    mutation ResetReport($claimId: ID!) {
+  claimReportReset(claimId: $claimId) {
+    id
+  }
+}
+    `;
+export type ResetReportMutationFn = ApolloReactCommon.MutationFunction<ResetReportMutation, ResetReportMutationVariables>;
+
+/**
+ * __useResetReportMutation__
+ *
+ * To run a mutation, you first call `useResetReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetReportMutation, { data, loading, error }] = useResetReportMutation({
+ *   variables: {
+ *      claimId: // value for 'claimId'
+ *   },
+ * });
+ */
+export function useResetReportMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ResetReportMutation, ResetReportMutationVariables>) {
+        return ApolloReactHooks.useMutation<ResetReportMutation, ResetReportMutationVariables>(ResetReportDocument, baseOptions);
+      }
+export type ResetReportMutationHookResult = ReturnType<typeof useResetReportMutation>;
+export type ResetReportMutationResult = ApolloReactCommon.MutationResult<ResetReportMutation>;
+export type ResetReportMutationOptions = ApolloReactCommon.BaseMutationOptions<ResetReportMutation, ResetReportMutationVariables>;
 export const ClaimListFilterDocument = gql`
     query ClaimListFilter {
   currentUser {

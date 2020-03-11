@@ -3,24 +3,38 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 import Info from 'components/Info'
 
-export default ({ __typename, grid, order, ...props }: any) => {
-  if (__typename === 'GroupField') return <div>Group</div>
+export default ({ __typename, grid, order, readOnly, ...props }: any) => {
+  const renderField = (component: any) => (
+    <Grid item xs={grid}>
+      <React.Suspense fallback={null}>
+        {component}
+      </React.Suspense>
+    </Grid>
+  )
+
+  if (__typename === 'GroupField') {
+    const Component = React.lazy(() => import(`./GroupField`))
+    return renderField(
+      <Component {...props} fullWidth disabled={readOnly} />
+    )
+  }
 
   if (__typename === 'InfoField') {
-    return (
-      <Grid item xs={grid}>
-        <Info {...props} fullWidth />
-      </Grid>
+    return renderField(
+      <Info {...props} fullWidth disabled={readOnly} />
+    )
+  }
+
+  if (__typename === 'FileField') {
+    const Component = React.lazy(() => import(`./FileField`))
+    return renderField(
+      <Component {...props} disabled={readOnly} />
     )
   }
 
   const Component = React.useMemo(() => React.lazy(() => import(`components/Formik/${__typename}`)), [__typename])
-  return (
-    <Grid item xs={grid}>
-      <React.Suspense fallback={null}>
-        <Component {...props} fullWidth variant='outlined' />
-      </React.Suspense>
-    </Grid>
+  return renderField(
+    <Component {...props} fullWidth variant='outlined' disabled={readOnly}  />
   )
 }
 

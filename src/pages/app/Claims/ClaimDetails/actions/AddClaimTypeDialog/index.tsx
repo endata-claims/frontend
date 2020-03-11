@@ -128,7 +128,7 @@ const AddClaimTypeForm = ({ type, options, handleClose }: any) => {
           const variables = {
             where: { id: String(claimId) },
             input: {
-              scopingSupplierId: parseInt(values.scopingSupplierId),
+              scopingSupplierId: values.scopingSupplierId,
               portfolioType: values.portfolioType
             }
           }

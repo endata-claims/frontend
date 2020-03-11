@@ -80,7 +80,7 @@ gql`
   }
 `
 
-export default ({ title, fields }: any) => {
+export default ({ title, fields, readOnly }: any) => {
   const classes = useStyles()
 
   if (!fields) return <>Empty card</>
@@ -97,7 +97,7 @@ export default ({ title, fields }: any) => {
       >
         {sortedFields.map(({ id, grid, ...props }: any) => (
           <Grid key={id} item xs={grid}>
-            <FormField {...props} />
+            <FormField {...props} readOnly={readOnly} />
           </Grid>
         ))}
       </Grid>

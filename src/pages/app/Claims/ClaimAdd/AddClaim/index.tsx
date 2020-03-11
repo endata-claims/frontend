@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Container, Grid, Button } from '@material-ui/core'
 import { Formik, Form, useFormikContext } from 'formik'
 
@@ -12,6 +12,7 @@ import lodash from 'lodash'
 
 import gql from 'graphql-tag'
 import { useAddClaimRootQuery, PortfolioType, useAddClaimMutation } from 'generated/graphql'
+import { useSnackbar } from 'notistack'
 
 gql`
   mutation AddClaim($input: ClaimJobCreate!) {
@@ -24,6 +25,7 @@ gql`
         message
       }
       result {
+        id
         claimId
       }
     }
@@ -35,6 +37,8 @@ export default () => {
   const companyId = id ? id : '0'
 
   const [addClaim] = useAddClaimMutation()
+  const { enqueueSnackbar } = useSnackbar()
+  const { push } = useHistory()
 
   return (
     <Formik
@@ -126,13 +130,44 @@ export default () => {
 
         return errors
       }}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting, setErrors }) => {
         const input = (({ meta, ...props }) => ({ ...props }))(values) as any
-        // const cleanInput = lodash.pickBy(input)
-        const res = await addClaim({ variables: { input }})
-        // const res = await addClaim({ variables: { input: values }})
-        console.log(res)
+        const portfolios = values.meta.portfolio.map((por, index) => values.portfolios[index])
+
+        const cleanInput = {
+          ...lodash.pickBy(input, v => (v !== '' && v !== null)),
+          ...input,
+          incidentDetail: {
+            ...lodash.pickBy(input.incidentDetail, v => (v !== '' && v !== null)),
+            riskAddress: {
+              ...lodash.pickBy(input.incidentDetail.riskAddress, v => (v !== '' && v !== null)),
+            }
+          },
+          insured: {
+            ...lodash.pickBy(input.insured, v => (v !== '' && v !== null))
+          },
+          portfolios: portfolios
+        } as any
+
+        const res = await addClaim({ variables: { input: cleanInput }})
+        enqueueSnackbar(res.data?.createClaimJob?.messages[0])
         setSubmitting(false)
+
+        if(res.data?.createClaimJob?.success) {
+          push(`/app/claims/${res.data.createClaimJob.result?.id}/job-info`)
+        }
+
+        if(res.data?.createClaimJob?.fieldErrors) {
+          const errors = res.data?.createClaimJob?.fieldErrors?.reduce((total, current) => {
+            if (!current?.fieldName) return total
+
+            return {
+              ...total,
+              [current?.fieldName]: current?.message
+            }
+          }, {})
+          setErrors(errors)
+        }
       }}
       validateOnChange={false}
     >

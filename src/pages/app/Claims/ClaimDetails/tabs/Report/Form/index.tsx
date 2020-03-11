@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid'
 
 import ReportCard from './FormCard'
 
-export default ({ cards }: any) => {
+export default ({ cards, readOnly }: any) => {
   const classes = useStyles()
 
   if (!cards) return null
@@ -18,6 +18,7 @@ export default ({ cards }: any) => {
           <ReportCard
             title={title}
             fields={fields}
+            readOnly={readOnly}
           />
         </Grid>
       ))}
