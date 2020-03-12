@@ -23,6 +23,7 @@ export default () => {
                   <Switch>
                     {/* <Redirect path='/' to='/app' /> */}
                     {[
+                      { exact: true, path: '/user/signin', component: React.lazy(() => import('pages/auth/Signin')) },
                       { exact: false, path: '/user/login', component: React.lazy(() => import('pages/auth/Login')) },
                       { exact: false, path: '/app', component: React.lazy(() => import('pages/app')) },
                       { exact: false, path: '/', component: React.lazy(() => import('pages/app')) },
