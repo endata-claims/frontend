@@ -1,2 +1,0 @@
-(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[22],{400:function(n,t,e){"use strict";e.r(t);var a=e(0),r=e.n(a);t.default=function(){return r.a.createElement(r.a.Fragment,null,"Tab 2")}}}]);
-//# sourceMappingURL=22.85fd902f.chunk.js.map
