@@ -36,12 +36,28 @@ export default gql`
 
     _allocatedBuilder: String
     _allocatedRestorer: String
+
+    # _jobNotes: _ClaimJobNoteConnection
   }
+
+  # type _ClaimJobNoteConnection {
+  #   _isDisplayInitialCallMade: Boolean
+  # }
 
   extend type ClaimPortfolio {
     _providerAndStatus: String
     _portfolioTooltips: String
   }
+
+  extend type ClaimNote {
+    _privacy: String
+  }
+  # extend type ClaimNoteConnection {
+  #   _isDisplayInitialCallMade: Boolean
+  #   _isDisplayApointmentMade: Boolean
+  #   _isDisplayChangeApointment: Boolean
+  #   _isDisplayNewJobNote: Boolean
+  # }
 
   # input ClaimWhereInput {
   #   keyWords: String

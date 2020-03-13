@@ -656,6 +656,7 @@ export type ClaimManager = {
 
 export type ClaimNote = {
    __typename?: 'ClaimNote',
+  _privacy?: Maybe<Scalars['String']>,
   id: Scalars['ID'],
   jobNoteId: Scalars['Int'],
   logDate?: Maybe<Scalars['DateTimeString']>,
@@ -3689,6 +3690,12 @@ export type ClaimMetaContextQuery = (
   & { me: Maybe<(
     { __typename?: 'AuthenticatedUser' }
     & AddDocumentMetaFragmentFragment
+  )>, user: Maybe<(
+    { __typename?: 'User' }
+    & { company: Maybe<(
+      { __typename?: 'CompanyProfile' }
+      & Pick<CompanyProfile, 'companyId'>
+    )> }
   )>, claim: Maybe<(
     { __typename?: 'ClaimJob' }
     & Pick<ClaimJob, 'claimId'>
@@ -3926,6 +3933,7 @@ export type ClaimDetailsQuery = (
     & InfoCardDataFragmentFragment
     & JobInfoTabFragmentFragment
     & ReportTabFragmentFragment
+    & JobNotesFragmentFragment
   )> }
 );
 
@@ -4147,6 +4155,79 @@ export type JobInfoTabUpdateMutation = (
     & { fieldErrors: Maybe<Array<Maybe<(
       { __typename?: 'EntityFieldError' }
       & Pick<EntityFieldError, 'fieldName' | 'level' | 'message'>
+    )>>> }
+  )> }
+);
+
+export type JobNoteListFragmentFragment = (
+  { __typename?: 'ClaimNote' }
+  & Pick<ClaimNote, 'portfolioType' | 'logDate' | 'private' | '_privacy' | 'message'>
+  & { user: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'userName'>
+    & { company: Maybe<(
+      { __typename?: 'CompanyProfile' }
+      & Pick<CompanyProfile, 'companyName'>
+    )> }
+  )> }
+);
+
+export type JobNotesQueryVariables = {
+  where?: Maybe<ClaimItemFilter>,
+  first?: Maybe<Scalars['Int']>,
+  after?: Maybe<Scalars['String']>
+};
+
+
+export type JobNotesQuery = (
+  { __typename?: 'Query' }
+  & { claimNotes: Maybe<(
+    { __typename?: 'ClaimNoteConnection' }
+    & { edges: Maybe<Array<Maybe<(
+      { __typename?: 'ClaimNoteEdge' }
+      & { node: Maybe<(
+        { __typename?: 'ClaimNote' }
+        & Pick<ClaimNote, 'id'>
+        & JobNoteListFragmentFragment
+      )> }
+    )>>> }
+  )> }
+);
+
+export type JobNotesFragmentFragment = (
+  { __typename?: 'ClaimJob' }
+  & { actions: Array<Maybe<(
+    { __typename?: 'Action' }
+    & Pick<Action, 'actionType' | 'name' | 'isDisplay' | 'isDisabled'>
+  )>>, building: Maybe<(
+    { __typename?: 'ClaimPortfolio' }
+    & { progress: Maybe<(
+      { __typename?: 'ClaimProgress' }
+      & Pick<ClaimProgress, 'initialCallMade' | 'appointmentBooked'>
+    )>, claimStatus: Maybe<(
+      { __typename?: 'ClaimStatus' }
+      & Pick<ClaimStatus, 'statusId'>
+    )>, jobSuppliers: Maybe<Array<Maybe<(
+      { __typename?: 'JobSupplier' }
+      & { quote: Maybe<(
+        { __typename?: 'JobQuote' }
+        & Pick<JobQuote, 'id'>
+      )> }
+    )>>> }
+  )>, restoration: Maybe<(
+    { __typename?: 'ClaimPortfolio' }
+    & { progress: Maybe<(
+      { __typename?: 'ClaimProgress' }
+      & Pick<ClaimProgress, 'initialCallMade' | 'appointmentBooked'>
+    )>, claimStatus: Maybe<(
+      { __typename?: 'ClaimStatus' }
+      & Pick<ClaimStatus, 'statusId'>
+    )>, jobSuppliers: Maybe<Array<Maybe<(
+      { __typename?: 'JobSupplier' }
+      & { quote: Maybe<(
+        { __typename?: 'JobQuote' }
+        & Pick<JobQuote, 'id'>
+      )> }
     )>>> }
   )> }
 );
@@ -5166,6 +5247,59 @@ export const JobInfoTabFragmentFragmentDoc = gql`
   claimDescription
 }
     `;
+export const JobNoteListFragmentFragmentDoc = gql`
+    fragment JobNoteListFragment on ClaimNote {
+  portfolioType
+  logDate
+  private
+  _privacy @client
+  message
+  user {
+    userName
+    company {
+      companyName
+    }
+  }
+}
+    `;
+export const JobNotesFragmentFragmentDoc = gql`
+    fragment JobNotesFragment on ClaimJob {
+  actions {
+    actionType
+    name
+    isDisplay
+    isDisabled
+  }
+  building {
+    progress {
+      initialCallMade
+      appointmentBooked
+    }
+    claimStatus {
+      statusId
+    }
+    jobSuppliers {
+      quote {
+        id
+      }
+    }
+  }
+  restoration {
+    progress {
+      initialCallMade
+      appointmentBooked
+    }
+    claimStatus {
+      statusId
+    }
+    jobSuppliers {
+      quote {
+        id
+      }
+    }
+  }
+}
+    `;
 export const FormCardFragmentFragmentDoc = gql`
     fragment FormCardFragment on Card {
   id
@@ -5699,6 +5833,11 @@ export const ClaimMetaContextDocument = gql`
   me: currentUser {
     ...AddDocumentMetaFragment
   }
+  user: me {
+    company {
+      companyId
+    }
+  }
   claim: claimJob(where: $where) {
     claimId
     ...AddClaimTypeDialogClaimFragment
@@ -5988,11 +6127,13 @@ export const ClaimDetailsDocument = gql`
     ...InfoCardDataFragment
     ...JobInfoTabFragment
     ...ReportTabFragment
+    ...JobNotesFragment
   }
 }
     ${InfoCardDataFragmentFragmentDoc}
 ${JobInfoTabFragmentFragmentDoc}
-${ReportTabFragmentFragmentDoc}`;
+${ReportTabFragmentFragmentDoc}
+${JobNotesFragmentFragmentDoc}`;
 
 /**
  * __useClaimDetailsQuery__
@@ -6109,6 +6250,46 @@ export function useJobInfoTabUpdateMutation(baseOptions?: ApolloReactHooks.Mutat
 export type JobInfoTabUpdateMutationHookResult = ReturnType<typeof useJobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationResult = ApolloReactCommon.MutationResult<JobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>;
+export const JobNotesDocument = gql`
+    query JobNotes($where: ClaimItemFilter, $first: Int, $after: String) {
+  claimNotes(where: $where, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        ...JobNoteListFragment
+      }
+    }
+  }
+}
+    ${JobNoteListFragmentFragmentDoc}`;
+
+/**
+ * __useJobNotesQuery__
+ *
+ * To run a query within a React component, call `useJobNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobNotesQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useJobNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<JobNotesQuery, JobNotesQueryVariables>) {
+        return ApolloReactHooks.useQuery<JobNotesQuery, JobNotesQueryVariables>(JobNotesDocument, baseOptions);
+      }
+export function useJobNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<JobNotesQuery, JobNotesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<JobNotesQuery, JobNotesQueryVariables>(JobNotesDocument, baseOptions);
+        }
+export type JobNotesQueryHookResult = ReturnType<typeof useJobNotesQuery>;
+export type JobNotesLazyQueryHookResult = ReturnType<typeof useJobNotesLazyQuery>;
+export type JobNotesQueryResult = ApolloReactCommon.QueryResult<JobNotesQuery, JobNotesQueryVariables>;
 export const SaveReportDocument = gql`
     mutation SaveReport($claimId: ID!, $data: Json!) {
   claimReportUpsert(claimId: $claimId, data: $data) {
