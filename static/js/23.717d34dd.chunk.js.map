@@ -1,1 +1,0 @@
-{"version":3,"sources":["pages/app/Claims/ClaimDetails/tabs/MakeSafe/index.tsx"],"names":[],"mappings":"uGAAA,2BAEe,qBACb,OACE","file":"static/js/23.717d34dd.chunk.js","sourcesContent":["import React from 'react'\n\nexport default () => {\n  return (\n    <>Tab 2</>\n  )\n}"],"sourceRoot":""}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["pages/app/Claims/ClaimDetails/tabs/Documents/index.tsx"],"names":[],"mappings":"uGAAA,2BAEe,qBACb,OACE","file":"static/js/26.d3361385.chunk.js","sourcesContent":["import React from 'react'\n\nexport default () => {\n  return (\n    <>Documents</>\n  )\n}"],"sourceRoot":""}

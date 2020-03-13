@@ -1,0 +1,2 @@
+(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[31],{418:function(n,t,e){"use strict";e.r(t);var r=e(0),a=e.n(r);t.default=function(){return a.a.createElement(a.a.Fragment,null,"Quote")}}}]);
+//# sourceMappingURL=31.409ca916.chunk.js.map

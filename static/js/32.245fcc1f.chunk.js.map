@@ -1,0 +1,1 @@
+{"version":3,"sources":["pages/app/Claims/ClaimDetails/tabs/Quotes/index.tsx"],"names":[],"mappings":"uGAAA,2BAEe,qBACb,OACE","file":"static/js/32.245fcc1f.chunk.js","sourcesContent":["import React from 'react'\n\nexport default () => {\n  return (\n    <>Quotes</>\n  )\n}"],"sourceRoot":""}

@@ -1,0 +1,2 @@
+(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[27],{405:function(n,e,t){"use strict";t.r(e);var r=t(0),a=t.n(r);e.default=function(){return a.a.createElement(a.a.Fragment,null,"Fees")}}}]);
+//# sourceMappingURL=27.dda55ae5.chunk.js.map
