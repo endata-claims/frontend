@@ -23,7 +23,7 @@ const TabLayout: React.FC<TabLayoutProps> = ({ loading, actions, body }) => {
           Next Step
         </Button>
         <div style={{ flexGrow: 1 }} />
-        {actions.map(({ label, unMountOn, ...props }: any, index: number) => {
+        {actions.map(({ label, unMountOn, children, ...props }: any, index: number) => {
           if(unMountOn) return null
 
           return (
@@ -36,6 +36,7 @@ const TabLayout: React.FC<TabLayoutProps> = ({ loading, actions, body }) => {
               {...props}
             >
               {label}
+              {children}
             </Button>
           )
         })}

@@ -96,7 +96,7 @@ const KpiAlert: React.FC<KpiAlertProps> = ({ data: filterData, outsideFilters })
   ], [])
   const onRowClick = (row: any) => {
     const claimId = row.original.id
-    push(`/app/claims/${claimId}`)
+    push(`/app/claims/${claimId}/job-info`)
   }
 
   const [isFetchingMore, setIsFetchingMore] = React.useState(false)

@@ -18,6 +18,7 @@ gql`
       }
     }
     claim: claimJob(where: $where) {
+      id
       claimId
       ...AddClaimTypeDialogClaimFragment
       ...AddDocumentClaimFragment

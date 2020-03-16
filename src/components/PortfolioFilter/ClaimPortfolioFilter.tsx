@@ -1,6 +1,6 @@
 import React from 'react'
-import PortfolioFilter, { PortfolioType } from 'components/WaterfallFilter/PortfolioFilter'
-import { useClaimMeta } from '../ClaimMetaContext'
+import PortfolioFilter, { PortfolioType } from 'components/PortfolioFilter/PortfolioFilter'
+import { useClaimMeta } from 'pages/app/Claims/ClaimDetails/ClaimMetaContext'
 
 const ClaimPortfolioFilter = ({ setPortfolio }: any) => {
   const claimMeta = useClaimMeta()
