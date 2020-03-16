@@ -1,2 +1,0 @@
-(this.webpackJsonpfrontend=this.webpackJsonpfrontend||[]).push([[29],{416:function(n,t,e){"use strict";e.r(t);var r=e(0),s=e.n(r);t.default=function(){return s.a.createElement(s.a.Fragment,null,"LossAdjuster")}}}]);
-//# sourceMappingURL=29.59c4da08.chunk.js.map

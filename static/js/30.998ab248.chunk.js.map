@@ -1,0 +1,1 @@
+{"version":3,"sources":["pages/app/Claims/ClaimDetails/tabs/MakeSafe/index.tsx"],"names":[],"mappings":"uGAAA,2BAEe,qBACb,OACE","file":"static/js/30.998ab248.chunk.js","sourcesContent":["import React from 'react'\n\nexport default () => {\n  return (\n    <>Make Safe</>\n  )\n}"],"sourceRoot":""}

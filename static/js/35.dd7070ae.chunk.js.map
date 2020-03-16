@@ -1,1 +1,0 @@
-{"version":3,"sources":["pages/app/Claims/ClaimDetails/tabs/Variations/index.tsx"],"names":[],"mappings":"uGAAA,2BAEe,qBACb,OACE","file":"static/js/35.dd7070ae.chunk.js","sourcesContent":["import React from 'react'\n\nexport default () => {\n  return (\n    <>Variations</>\n  )\n}"],"sourceRoot":""}
