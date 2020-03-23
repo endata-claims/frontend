@@ -17,7 +17,10 @@ const DateField: React.FC<DateFieldProps> = ({ variant, startAdornment, endAdorn
   return (
     <Field component={DatePicker}
       {...props}
-      variant='inline'
+
+      variant='dialog'
+      clearable
+
       inputVariant={variant}
       format='dd/MM/yyyy'
       placeholder='DD/MM/YYYY'

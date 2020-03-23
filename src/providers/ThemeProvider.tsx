@@ -5,8 +5,10 @@ import { Helmet } from 'react-helmet'
 
 const ThemeProvider: React.FC = ({ children }) => {
   overrideStyles({})
+
   MuiFormLabelStyles({})
   MuiSwitchStyles({})
+  MuiButttonStyles({})
 
   return (
     <>
@@ -69,3 +71,9 @@ const MuiSwitchStyles = makeStyles({
     color: 'red'
   }
 }, { name: 'MuiSwitch' })
+
+const MuiButttonStyles = makeStyles({
+  label: {
+    textTransform: 'none'
+  }
+}, { name: 'MuiButton' })

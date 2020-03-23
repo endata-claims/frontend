@@ -143,7 +143,10 @@ export default {
 
       return request
     },
-    _insuredPhone: ({ phone1, phone2, phone3 }) => [phone1, phone2, phone3].filter(x => x).join(', '),
+    _insuredPhone: (root) => {
+      const { phone1, phone2, phone3 } = root.insured
+      return [phone1, phone2, phone3].filter(x => x).join(', ')
+    },
     _incidentAddress: (root) => {
       if(root?.incidentDetail?.riskAddress) {
         const { line1, suburb, state, postcode } = root.incidentDetail.riskAddress

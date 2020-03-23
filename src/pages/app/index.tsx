@@ -35,6 +35,7 @@ export default () => {
   }, [pathname, rootPath, push])
 
   const customisation = data?.currentUser?._customisation
+  console.log(data)
 
   if (loading || !data?.currentUser?._appRoutes) return <Loading />
 

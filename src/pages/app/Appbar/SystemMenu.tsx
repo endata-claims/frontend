@@ -1,6 +1,7 @@
 import React from 'react'
 import { IconButton, Menu, MenuItem } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew'
 import { useHistory } from 'react-router-dom'
 
 const SystemMenu = (props: any) => {
@@ -26,7 +27,10 @@ const SystemMenu = (props: any) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <PowerSettingsNewIcon style={{ marginRight: 16 }} />
+          Logout
+        </MenuItem>
       </Menu>
     </>
   )

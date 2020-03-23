@@ -93,19 +93,23 @@ const ClaimListBody: React.FC<ClaimListBodyProps> = ({ data, loading, onLoadMore
   }
 
   const renderRowSubComponent = React.useCallback(({ row: { original } }) => {
+    console.log(original)
+
     const blocks = [
       { label: 'Ins Ref #', value: original.refNumber },
       { label: 'Customer', value: original.insured?.name },
       { label: 'Phone(s)', value: original._insuredPhone },
-      { label: 'Email', value: original.insured?.email },
+      { label: 'Customer Email', value: original.insured?.email },
       { label: 'Incident Date', value: original.incidentDetail?.incidentDate },
       { label: 'Property/Risk Address', value: original._incidentAddress },
+      { label: 'Builder', value: original._claimBuilder },
+      { label: 'Restorer', value: original._claimRestorer }
     ]
 
     return (
       <Grid container spacing={2}>
         {blocks.map(({ label, value }) => (
-          <Grid item xs={4} key={label}>
+          <Grid item xs={3} key={label}>
             <Info label={label} value={value} />
           </Grid>
         ))}
@@ -121,7 +125,7 @@ const ClaimListBody: React.FC<ClaimListBodyProps> = ({ data, loading, onLoadMore
   const mappedData = data?.claimJobs?.edges?.map(edge => edge?.node)
 
   return (
-    <Container maxWidth='xl' style={{ position: 'relative', height: 'calc(100% - 88px - 8px)' }}>
+    <Container maxWidth='xl' style={{ position: 'relative', height: 'calc(100% - 120px - 8px)' }}>
       <Table
         loading={loading}
         loadingMore={isFetchingMore}

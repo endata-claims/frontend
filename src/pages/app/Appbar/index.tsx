@@ -9,6 +9,8 @@ import RouteGroup from './RouteGroup'
 import SystemMenu from './SystemMenu'
 import CommunicationMenu from './CommunicationMenu'
 
+import { COMPANY_RESOURCE } from 'configs'
+
 export interface AppbarProps {
   logo?: string | null
   companyLogo?: string | null
@@ -30,13 +32,14 @@ const Appbar: React.FC<AppbarProps> = ({ logo, companyLogo, accessPaths }) => {
       <Container maxWidth='lg'>
         <Toolbar style={{ minHeight: 48, height: 48 }}>
           <div style={{ marginRight: 'auto' }}>
-            {companyLogo && <img src={companyLogo} alt='ENData Claims' style={{ marginRight: 8 }} />}
+            {companyLogo && <img src={`${COMPANY_RESOURCE}/${companyLogo}`} alt='ENData Claims' style={{ marginRight: 8 }} />}
             <RouteGroup routes={routes} activeRoute={activeRoute} />
           </div>
-          <div style={{ marginLeft: 'auto' }}>
+          <div style={{ marginLeft: 'auto', height: '100%', display: 'flex' }}>
             {accessPaths.includes('/app/communicationtasks') && <CommunicationMenu style={{ marginRight: 8 }} />}
             <SystemMenu />
-            {logo && <img src={logo} alt='ENData Claims' />}
+            {/* {logo && <img src={`${COMPANY_RESOURCE}/${logo}`} alt='ENData Claims' />} */}
+            <img src={`${COMPANY_RESOURCE}/endata/logo.png`} alt='ENData Claims' />
           </div>
         </Toolbar>
       </Container>

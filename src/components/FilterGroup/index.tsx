@@ -125,7 +125,10 @@ const FilterGroupDisplay: React.FC<FilterGroupDisplayProps> = ({
 
 const getInitialValues = (filters: FilterProps[]) => {
   return filters.reduce((total: any, current: FilterProps) => {
-    const initValue = current.type === 'Select' ? '' : ''
+    const initValue =
+      current.type === 'Select' ? '' :
+      current.type === 'Date' ? null :
+      ''
 
     total[current.name] = initValue
     return total
