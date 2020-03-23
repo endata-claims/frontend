@@ -74,7 +74,7 @@ export default ({ data, loading }: ReportProps) => {
     }
   }
 
-  const initialValues = getInitialValue(data?.claimJob?.reportForm?.cards)
+  const initialValues = data?.claimJob?.reportForm?.cards ? getInitialValue(data.claimJob.reportForm.cards) : {}
   const isSavedData = Boolean(data?.claimJob?.reportData)
   const isReadOnly = data?.claimJob?.reportData?.status === 'REPORTED'
 

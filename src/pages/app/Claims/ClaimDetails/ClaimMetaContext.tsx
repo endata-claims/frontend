@@ -12,7 +12,13 @@ gql`
     me: currentUser {
       ...AddDocumentMetaFragment
     }
+    user: me {
+      company {
+        companyId
+      }
+    }
     claim: claimJob(where: $where) {
+      id
       claimId
       ...AddClaimTypeDialogClaimFragment
       ...AddDocumentClaimFragment

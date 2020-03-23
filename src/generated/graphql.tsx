@@ -656,6 +656,7 @@ export type ClaimManager = {
 
 export type ClaimNote = {
    __typename?: 'ClaimNote',
+  _privacy?: Maybe<Scalars['String']>,
   id: Scalars['ID'],
   jobNoteId: Scalars['Int'],
   logDate?: Maybe<Scalars['DateTimeString']>,
@@ -3689,9 +3690,15 @@ export type ClaimMetaContextQuery = (
   & { me: Maybe<(
     { __typename?: 'AuthenticatedUser' }
     & AddDocumentMetaFragmentFragment
+  )>, user: Maybe<(
+    { __typename?: 'User' }
+    & { company: Maybe<(
+      { __typename?: 'CompanyProfile' }
+      & Pick<CompanyProfile, 'companyId'>
+    )> }
   )>, claim: Maybe<(
     { __typename?: 'ClaimJob' }
-    & Pick<ClaimJob, 'claimId'>
+    & Pick<ClaimJob, 'id' | 'claimId'>
     & AddClaimTypeDialogClaimFragmentFragment
     & AddDocumentClaimFragmentFragment
     & JobInfo_ClaimDetailsCardMetaFragmentFragment
@@ -3926,6 +3933,7 @@ export type ClaimDetailsQuery = (
     & InfoCardDataFragmentFragment
     & JobInfoTabFragmentFragment
     & ReportTabFragmentFragment
+    & JobNotesFragmentFragment
   )> }
 );
 
@@ -4148,6 +4156,161 @@ export type JobInfoTabUpdateMutation = (
       { __typename?: 'EntityFieldError' }
       & Pick<EntityFieldError, 'fieldName' | 'level' | 'message'>
     )>>> }
+  )> }
+);
+
+export type JobNoteListFragmentFragment = (
+  { __typename?: 'ClaimNote' }
+  & Pick<ClaimNote, 'portfolioType' | 'logDate' | 'private' | '_privacy' | 'message'>
+  & { user: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'userName'>
+    & { company: Maybe<(
+      { __typename?: 'CompanyProfile' }
+      & Pick<CompanyProfile, 'companyName'>
+    )> }
+  )> }
+);
+
+export type JobNotesQueryVariables = {
+  where?: Maybe<ClaimItemFilter>,
+  first?: Maybe<Scalars['Int']>,
+  after?: Maybe<Scalars['String']>
+};
+
+
+export type JobNotesQuery = (
+  { __typename?: 'Query' }
+  & { claimNotes: Maybe<(
+    { __typename?: 'ClaimNoteConnection' }
+    & { edges: Maybe<Array<Maybe<(
+      { __typename?: 'ClaimNoteEdge' }
+      & { node: Maybe<(
+        { __typename?: 'ClaimNote' }
+        & Pick<ClaimNote, 'id'>
+        & JobNoteListFragmentFragment
+      )> }
+    )>>> }
+  )> }
+);
+
+export type JobNotesFragmentFragment = (
+  { __typename?: 'ClaimJob' }
+  & { actions: Array<Maybe<(
+    { __typename?: 'Action' }
+    & Pick<Action, 'actionType' | 'name' | 'isDisplay' | 'isDisabled'>
+  )>>, building: Maybe<(
+    { __typename?: 'ClaimPortfolio' }
+    & { progress: Maybe<(
+      { __typename?: 'ClaimProgress' }
+      & Pick<ClaimProgress, 'initialCallMade' | 'appointmentBooked'>
+    )>, claimStatus: Maybe<(
+      { __typename?: 'ClaimStatus' }
+      & Pick<ClaimStatus, 'statusId'>
+    )>, jobSuppliers: Maybe<Array<Maybe<(
+      { __typename?: 'JobSupplier' }
+      & { quote: Maybe<(
+        { __typename?: 'JobQuote' }
+        & Pick<JobQuote, 'id'>
+      )> }
+    )>>> }
+  )>, restoration: Maybe<(
+    { __typename?: 'ClaimPortfolio' }
+    & { progress: Maybe<(
+      { __typename?: 'ClaimProgress' }
+      & Pick<ClaimProgress, 'initialCallMade' | 'appointmentBooked'>
+    )>, claimStatus: Maybe<(
+      { __typename?: 'ClaimStatus' }
+      & Pick<ClaimStatus, 'statusId'>
+    )>, jobSuppliers: Maybe<Array<Maybe<(
+      { __typename?: 'JobSupplier' }
+      & { quote: Maybe<(
+        { __typename?: 'JobQuote' }
+        & Pick<JobQuote, 'id'>
+      )> }
+    )>>> }
+  )> }
+);
+
+export type AppointmentMadeMutationVariables = {
+  id: Scalars['ID'],
+  input: AppointmentInput
+};
+
+
+export type AppointmentMadeMutation = (
+  { __typename?: 'Mutation' }
+  & { claimMakeAppointment: Maybe<(
+    { __typename?: 'ClaimPortfolioPayload' }
+    & Pick<ClaimPortfolioPayload, 'success' | 'messages'>
+  )> }
+);
+
+export type CancelAwaitingInfoMutationVariables = {
+  where: EnDataPortfolioKey
+};
+
+
+export type CancelAwaitingInfoMutation = (
+  { __typename?: 'Mutation' }
+  & { claimCancelAwaitingInfo: Maybe<(
+    { __typename?: 'ClaimPortfolioPayload' }
+    & Pick<ClaimPortfolioPayload, 'success' | 'messages'>
+  )> }
+);
+
+export type AddAwaitingInfoMutationVariables = {
+  input: AwaitingInfoClaimInputType,
+  where: EnDataPortfolioKey
+};
+
+
+export type AddAwaitingInfoMutation = (
+  { __typename?: 'Mutation' }
+  & { claimAwaitingInfo: Maybe<(
+    { __typename?: 'ClaimPortfolioPayload' }
+    & Pick<ClaimPortfolioPayload, 'success' | 'messages'>
+  )> }
+);
+
+export type AwaitingInfoFormQueryVariables = {
+  portfolios?: Maybe<Array<Maybe<PortfolioType>>>
+};
+
+
+export type AwaitingInfoFormQuery = (
+  { __typename?: 'Query' }
+  & { claimFilterOptions: Maybe<Array<Maybe<(
+    { __typename?: 'FilterOption' }
+    & Pick<FilterOption, 'value'>
+    & { label: FilterOption['name'] }
+  )>>> }
+);
+
+export type ChangeAppointmentMutationVariables = {
+  id: Scalars['ID'],
+  input: AppointmentInput
+};
+
+
+export type ChangeAppointmentMutation = (
+  { __typename?: 'Mutation' }
+  & { claimMakeAppointment: Maybe<(
+    { __typename?: 'ClaimPortfolioPayload' }
+    & Pick<ClaimPortfolioPayload, 'success' | 'messages'>
+  )> }
+);
+
+export type InitCallMutationVariables = {
+  id: Scalars['ID']
+};
+
+
+export type InitCallMutation = (
+  { __typename?: 'Mutation' }
+  & { claimInitialCall: Maybe<(
+    { __typename?: 'ClaimPortfolioPayload' }
+    & Pick<ClaimPortfolioPayload, 'success' | 'messages'>
   )> }
 );
 
@@ -4604,6 +4767,23 @@ export type LoginQuery = (
     { __typename?: 'AuthenticatedUser' }
     & Pick<AuthenticatedUser, 'id' | 'name'>
   )> }
+);
+
+export type SigninMutationVariables = {
+  input: UserCredential
+};
+
+
+export type SigninMutation = (
+  { __typename?: 'Mutation' }
+  & { userAuthenticateAllServer: Maybe<Array<Maybe<(
+    { __typename?: 'UserValidation' }
+    & Pick<UserValidation, 'accessToken' | 'refreshToken'>
+    & { user: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'userName'>
+    )> }
+  )>>> }
 );
 
 export const ClaimDetailsCardFragmentFragmentDoc = gql`
@@ -5149,6 +5329,59 @@ export const JobInfoTabFragmentFragmentDoc = gql`
   claimDescription
 }
     `;
+export const JobNoteListFragmentFragmentDoc = gql`
+    fragment JobNoteListFragment on ClaimNote {
+  portfolioType
+  logDate
+  private
+  _privacy @client
+  message
+  user {
+    userName
+    company {
+      companyName
+    }
+  }
+}
+    `;
+export const JobNotesFragmentFragmentDoc = gql`
+    fragment JobNotesFragment on ClaimJob {
+  actions {
+    actionType
+    name
+    isDisplay
+    isDisabled
+  }
+  building {
+    progress {
+      initialCallMade
+      appointmentBooked
+    }
+    claimStatus {
+      statusId
+    }
+    jobSuppliers {
+      quote {
+        id
+      }
+    }
+  }
+  restoration {
+    progress {
+      initialCallMade
+      appointmentBooked
+    }
+    claimStatus {
+      statusId
+    }
+    jobSuppliers {
+      quote {
+        id
+      }
+    }
+  }
+}
+    `;
 export const FormCardFragmentFragmentDoc = gql`
     fragment FormCardFragment on Card {
   id
@@ -5682,7 +5915,13 @@ export const ClaimMetaContextDocument = gql`
   me: currentUser {
     ...AddDocumentMetaFragment
   }
+  user: me {
+    company {
+      companyId
+    }
+  }
   claim: claimJob(where: $where) {
+    id
     claimId
     ...AddClaimTypeDialogClaimFragment
     ...AddDocumentClaimFragment
@@ -5971,11 +6210,13 @@ export const ClaimDetailsDocument = gql`
     ...InfoCardDataFragment
     ...JobInfoTabFragment
     ...ReportTabFragment
+    ...JobNotesFragment
   }
 }
     ${InfoCardDataFragmentFragmentDoc}
 ${JobInfoTabFragmentFragmentDoc}
-${ReportTabFragmentFragmentDoc}`;
+${ReportTabFragmentFragmentDoc}
+${JobNotesFragmentFragmentDoc}`;
 
 /**
  * __useClaimDetailsQuery__
@@ -6092,6 +6333,248 @@ export function useJobInfoTabUpdateMutation(baseOptions?: ApolloReactHooks.Mutat
 export type JobInfoTabUpdateMutationHookResult = ReturnType<typeof useJobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationResult = ApolloReactCommon.MutationResult<JobInfoTabUpdateMutation>;
 export type JobInfoTabUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<JobInfoTabUpdateMutation, JobInfoTabUpdateMutationVariables>;
+export const JobNotesDocument = gql`
+    query JobNotes($where: ClaimItemFilter, $first: Int, $after: String) {
+  claimNotes(where: $where, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        ...JobNoteListFragment
+      }
+    }
+  }
+}
+    ${JobNoteListFragmentFragmentDoc}`;
+
+/**
+ * __useJobNotesQuery__
+ *
+ * To run a query within a React component, call `useJobNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobNotesQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useJobNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<JobNotesQuery, JobNotesQueryVariables>) {
+        return ApolloReactHooks.useQuery<JobNotesQuery, JobNotesQueryVariables>(JobNotesDocument, baseOptions);
+      }
+export function useJobNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<JobNotesQuery, JobNotesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<JobNotesQuery, JobNotesQueryVariables>(JobNotesDocument, baseOptions);
+        }
+export type JobNotesQueryHookResult = ReturnType<typeof useJobNotesQuery>;
+export type JobNotesLazyQueryHookResult = ReturnType<typeof useJobNotesLazyQuery>;
+export type JobNotesQueryResult = ApolloReactCommon.QueryResult<JobNotesQuery, JobNotesQueryVariables>;
+export const AppointmentMadeDocument = gql`
+    mutation AppointmentMade($id: ID!, $input: AppointmentInput!) {
+  claimMakeAppointment(where: {id: $id}, input: $input) {
+    success
+    messages
+  }
+}
+    `;
+export type AppointmentMadeMutationFn = ApolloReactCommon.MutationFunction<AppointmentMadeMutation, AppointmentMadeMutationVariables>;
+
+/**
+ * __useAppointmentMadeMutation__
+ *
+ * To run a mutation, you first call `useAppointmentMadeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAppointmentMadeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [appointmentMadeMutation, { data, loading, error }] = useAppointmentMadeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAppointmentMadeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AppointmentMadeMutation, AppointmentMadeMutationVariables>) {
+        return ApolloReactHooks.useMutation<AppointmentMadeMutation, AppointmentMadeMutationVariables>(AppointmentMadeDocument, baseOptions);
+      }
+export type AppointmentMadeMutationHookResult = ReturnType<typeof useAppointmentMadeMutation>;
+export type AppointmentMadeMutationResult = ApolloReactCommon.MutationResult<AppointmentMadeMutation>;
+export type AppointmentMadeMutationOptions = ApolloReactCommon.BaseMutationOptions<AppointmentMadeMutation, AppointmentMadeMutationVariables>;
+export const CancelAwaitingInfoDocument = gql`
+    mutation CancelAwaitingInfo($where: ENDataPortfolioKey!) {
+  claimCancelAwaitingInfo(where: $where) {
+    success
+    messages
+  }
+}
+    `;
+export type CancelAwaitingInfoMutationFn = ApolloReactCommon.MutationFunction<CancelAwaitingInfoMutation, CancelAwaitingInfoMutationVariables>;
+
+/**
+ * __useCancelAwaitingInfoMutation__
+ *
+ * To run a mutation, you first call `useCancelAwaitingInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelAwaitingInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelAwaitingInfoMutation, { data, loading, error }] = useCancelAwaitingInfoMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useCancelAwaitingInfoMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CancelAwaitingInfoMutation, CancelAwaitingInfoMutationVariables>) {
+        return ApolloReactHooks.useMutation<CancelAwaitingInfoMutation, CancelAwaitingInfoMutationVariables>(CancelAwaitingInfoDocument, baseOptions);
+      }
+export type CancelAwaitingInfoMutationHookResult = ReturnType<typeof useCancelAwaitingInfoMutation>;
+export type CancelAwaitingInfoMutationResult = ApolloReactCommon.MutationResult<CancelAwaitingInfoMutation>;
+export type CancelAwaitingInfoMutationOptions = ApolloReactCommon.BaseMutationOptions<CancelAwaitingInfoMutation, CancelAwaitingInfoMutationVariables>;
+export const AddAwaitingInfoDocument = gql`
+    mutation AddAwaitingInfo($input: AwaitingInfoClaimInputType!, $where: ENDataPortfolioKey!) {
+  claimAwaitingInfo(input: $input, where: $where) {
+    success
+    messages
+  }
+}
+    `;
+export type AddAwaitingInfoMutationFn = ApolloReactCommon.MutationFunction<AddAwaitingInfoMutation, AddAwaitingInfoMutationVariables>;
+
+/**
+ * __useAddAwaitingInfoMutation__
+ *
+ * To run a mutation, you first call `useAddAwaitingInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAwaitingInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAwaitingInfoMutation, { data, loading, error }] = useAddAwaitingInfoMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useAddAwaitingInfoMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddAwaitingInfoMutation, AddAwaitingInfoMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddAwaitingInfoMutation, AddAwaitingInfoMutationVariables>(AddAwaitingInfoDocument, baseOptions);
+      }
+export type AddAwaitingInfoMutationHookResult = ReturnType<typeof useAddAwaitingInfoMutation>;
+export type AddAwaitingInfoMutationResult = ApolloReactCommon.MutationResult<AddAwaitingInfoMutation>;
+export type AddAwaitingInfoMutationOptions = ApolloReactCommon.BaseMutationOptions<AddAwaitingInfoMutation, AddAwaitingInfoMutationVariables>;
+export const AwaitingInfoFormDocument = gql`
+    query AwaitingInfoForm($portfolios: [PortfolioType]) {
+  claimFilterOptions(where: {subject: "awaitingInfoReasons", portfolios: $portfolios}) {
+    label: name
+    value
+  }
+}
+    `;
+
+/**
+ * __useAwaitingInfoFormQuery__
+ *
+ * To run a query within a React component, call `useAwaitingInfoFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAwaitingInfoFormQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAwaitingInfoFormQuery({
+ *   variables: {
+ *      portfolios: // value for 'portfolios'
+ *   },
+ * });
+ */
+export function useAwaitingInfoFormQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AwaitingInfoFormQuery, AwaitingInfoFormQueryVariables>) {
+        return ApolloReactHooks.useQuery<AwaitingInfoFormQuery, AwaitingInfoFormQueryVariables>(AwaitingInfoFormDocument, baseOptions);
+      }
+export function useAwaitingInfoFormLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AwaitingInfoFormQuery, AwaitingInfoFormQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<AwaitingInfoFormQuery, AwaitingInfoFormQueryVariables>(AwaitingInfoFormDocument, baseOptions);
+        }
+export type AwaitingInfoFormQueryHookResult = ReturnType<typeof useAwaitingInfoFormQuery>;
+export type AwaitingInfoFormLazyQueryHookResult = ReturnType<typeof useAwaitingInfoFormLazyQuery>;
+export type AwaitingInfoFormQueryResult = ApolloReactCommon.QueryResult<AwaitingInfoFormQuery, AwaitingInfoFormQueryVariables>;
+export const ChangeAppointmentDocument = gql`
+    mutation ChangeAppointment($id: ID!, $input: AppointmentInput!) {
+  claimMakeAppointment(where: {id: $id}, input: $input) {
+    success
+    messages
+  }
+}
+    `;
+export type ChangeAppointmentMutationFn = ApolloReactCommon.MutationFunction<ChangeAppointmentMutation, ChangeAppointmentMutationVariables>;
+
+/**
+ * __useChangeAppointmentMutation__
+ *
+ * To run a mutation, you first call `useChangeAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeAppointmentMutation, { data, loading, error }] = useChangeAppointmentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useChangeAppointmentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ChangeAppointmentMutation, ChangeAppointmentMutationVariables>) {
+        return ApolloReactHooks.useMutation<ChangeAppointmentMutation, ChangeAppointmentMutationVariables>(ChangeAppointmentDocument, baseOptions);
+      }
+export type ChangeAppointmentMutationHookResult = ReturnType<typeof useChangeAppointmentMutation>;
+export type ChangeAppointmentMutationResult = ApolloReactCommon.MutationResult<ChangeAppointmentMutation>;
+export type ChangeAppointmentMutationOptions = ApolloReactCommon.BaseMutationOptions<ChangeAppointmentMutation, ChangeAppointmentMutationVariables>;
+export const InitCallDocument = gql`
+    mutation InitCall($id: ID!) {
+  claimInitialCall(where: {id: $id}) {
+    success
+    messages
+  }
+}
+    `;
+export type InitCallMutationFn = ApolloReactCommon.MutationFunction<InitCallMutation, InitCallMutationVariables>;
+
+/**
+ * __useInitCallMutation__
+ *
+ * To run a mutation, you first call `useInitCallMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInitCallMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [initCallMutation, { data, loading, error }] = useInitCallMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInitCallMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<InitCallMutation, InitCallMutationVariables>) {
+        return ApolloReactHooks.useMutation<InitCallMutation, InitCallMutationVariables>(InitCallDocument, baseOptions);
+      }
+export type InitCallMutationHookResult = ReturnType<typeof useInitCallMutation>;
+export type InitCallMutationResult = ApolloReactCommon.MutationResult<InitCallMutation>;
+export type InitCallMutationOptions = ApolloReactCommon.BaseMutationOptions<InitCallMutation, InitCallMutationVariables>;
 export const SaveReportDocument = gql`
     mutation SaveReport($claimId: ID!, $data: Json!) {
   claimReportUpsert(claimId: $claimId, data: $data) {
@@ -6676,3 +7159,39 @@ export function useLoginLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = ApolloReactCommon.QueryResult<LoginQuery, LoginQueryVariables>;
+export const SigninDocument = gql`
+    mutation Signin($input: UserCredential!) {
+  userAuthenticateAllServer(input: $input) {
+    accessToken
+    refreshToken
+    user {
+      userName
+    }
+  }
+}
+    `;
+export type SigninMutationFn = ApolloReactCommon.MutationFunction<SigninMutation, SigninMutationVariables>;
+
+/**
+ * __useSigninMutation__
+ *
+ * To run a mutation, you first call `useSigninMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSigninMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signinMutation, { data, loading, error }] = useSigninMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSigninMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SigninMutation, SigninMutationVariables>) {
+        return ApolloReactHooks.useMutation<SigninMutation, SigninMutationVariables>(SigninDocument, baseOptions);
+      }
+export type SigninMutationHookResult = ReturnType<typeof useSigninMutation>;
+export type SigninMutationResult = ApolloReactCommon.MutationResult<SigninMutation>;
+export type SigninMutationOptions = ApolloReactCommon.BaseMutationOptions<SigninMutation, SigninMutationVariables>;

@@ -19,7 +19,6 @@ export default new RetryLink({
         }
 
         const { accessToken, refreshToken: newRefreshToken } = res
-        console.log('token refreshed')
         localStorage.setItem('ACCESS_TOKEN', accessToken)
         localStorage.setItem('REFRESH_TOKEN', newRefreshToken)
         operation.setContext({
@@ -36,7 +35,7 @@ export default new RetryLink({
 })
 
 const kickUserToLogin = () => {
-  window.location.href = localStorage.REDIRECT_URL
+  window.location.href = localStorage.REDIRECT_URL || '/user/signin'
 }
 
 const isTokenExpiredError = (error: any) => {

@@ -16,6 +16,7 @@ gql`
       ...InfoCardDataFragment
       ...JobInfoTabFragment
       ...ReportTabFragment
+      ...JobNotesFragment
     }
   }
 `
@@ -23,6 +24,17 @@ gql`
 const routes = [
   { label: 'Job Info', path: '/job-info', component: 'JobInfo' },
   { label: 'Make Safe', path: '/make-safe', component: 'MakeSafe' },
+  { label: 'Site Report', path: '/site-report', component: 'SiteReport' },
+  { label: 'Quote', path: '/quote', component: 'Quote' },
+  { label: 'Scope', path: '/scope', component: 'Scope' },
+  { label: 'Quotes', path: '/quotes', component: 'Quotes' },
+  { label: 'Job In Progress', path: '/job-in-progress', component: 'JobInProgress' },
+  { label: 'Job Notes', path: '/job-notes', component: 'JobNotes' },
+  { label: 'Documents', path: '/documents', component: 'Documents' },
+  { label: 'Communications', path: '/communications', component: 'Communications' },
+  { label: 'Variations', path: '/variations', component: 'Variations' },
+  { label: 'Fees', path: '/fees', component: 'Fees' },
+  { label: 'Loss Adjuster', path: '/loss-adjuster', component: 'LossAdjuster' },
   { label: 'Report', path: '/report', component: 'Report' },
 ].map(({ component, ...args }) => ({ ...args, component: React.lazy(() => import(`./tabs/${component}`)) }))
 
@@ -54,10 +66,10 @@ export default () => {
           container direction='column'
           component={Container} maxWidth='xl'
         >
-          <Grid item>
+          <Grid item style={{ width: '100%' }}>
             <InfoCard data={data} loading={loading} />
           </Grid>
-          <Grid item>
+          <Grid item style={{ width: '100%' }}>
             <TabNavbar routes={routes} />
           </Grid>
           <Grid item xs>
@@ -65,7 +77,7 @@ export default () => {
               <Switch>
                 {routes.map(({ path, component: Comp }) => (
                   <Route key={path} path={`${url}${path}`} render={props => (
-                    <Comp {...props} data={data} loading={loading} />
+                    <Comp {...props} data={data} loading={loading} claimId={claimId} />
                   )} />
                 ))}
               </Switch>

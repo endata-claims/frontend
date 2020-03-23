@@ -24,7 +24,7 @@ gql`
 
 export default () => {
   const { push, location: { pathname } } = useHistory()
-  if (!localStorage.ACCESS_TOKEN) push('/user/login')
+  if (!localStorage.ACCESS_TOKEN) push('/user/signin')
 
   const { data, loading } = useAppRootQuery()
   const accessRoutes = useAccessRoutes({ appRoutes: data?.currentUser?._appRoutes })

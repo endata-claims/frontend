@@ -203,6 +203,7 @@ export default {
 
       return root?.restoration?.authorisedSupplier?.companyName || root?.restoration?.scopingSupplier?.companyName || 'N/a'
     },
+    // _jobNotes: root => root
   },
   ClaimPortfolio: {
     _providerAndStatus: async (root, __, { client }) => {
@@ -226,7 +227,28 @@ export default {
 
       return `${name}${phone1}${phone2}`
     }
-  }
+  },
+  // ClaimNoteConnection: {
+  //   _isDisplayInitialCallMade: async (root, __, { client }) => {
+  //     const user = await client.query({ query: gql`query _claimValue { currentUser { userType }}` })
+  //     console.log(user)
+
+  //     return null
+  //   }
+  //   // _isDisplayApointmentMade
+  //   // _isDisplayChangeApointment
+  //   // _isDisplayNewJobNote
+  // },
+  ClaimNote: {
+    _privacy: root => {
+      return root?.private === 1 ? 'Private' : 'Public'
+    }
+  },
+  // _ClaimJobNoteConnection: {
+  //   _isDisplayInitialCallMade: () => {
+  //     return true
+  //   }
+  // }
 } as Resolvers
 
 const getPortfolioStatus = (value: any, role: any) => {

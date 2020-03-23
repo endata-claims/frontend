@@ -23,18 +23,23 @@ const TabLayout: React.FC<TabLayoutProps> = ({ loading, actions, body }) => {
           Next Step
         </Button>
         <div style={{ flexGrow: 1 }} />
-        {actions.map(({ label, ...props }: any, index: number) => (
-          <Button
-            key={index}
-            style={{ marginRight: 8 }}
-            size='large'
-            color='primary'
-            variant='outlined'
-            {...props}
-          >
-            {label}
-          </Button>
-        ))}
+        {actions.map(({ label, unMountOn, children, ...props }: any, index: number) => {
+          if(unMountOn) return null
+
+          return (
+            <Button
+              key={index}
+              style={{ marginRight: 8 }}
+              size='large'
+              color='primary'
+              variant='outlined'
+              {...props}
+            >
+              {label}
+              {children}
+            </Button>
+          )
+        })}
       </Paper>
       {body}
     </div>

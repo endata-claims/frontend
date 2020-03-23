@@ -2,7 +2,7 @@ import React from 'react'
 
 import WaterfallFilter from '.'
 import { Paper, Grid } from '@material-ui/core'
-import PortfolioFilter, { PortfolioType } from './PortfolioFilter'
+import PortfolioFilter, { PortfolioType } from '../PortfolioFilter/PortfolioFilter'
 
 export default {
   title: 'Waterfall filter',

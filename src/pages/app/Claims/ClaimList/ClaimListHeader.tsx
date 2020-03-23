@@ -5,7 +5,7 @@ import { FilterProps } from 'components/FilterGroup/Filter'
 import { Grid, Paper } from '@material-ui/core'
 import { gql } from '@apollo/client'
 import { useClaimListFilterQuery, useClaimListWaterfallFilterQuery } from 'generated/graphql'
-import PortfolioFilter, { PortfolioType } from 'components/WaterfallFilter/PortfolioFilter'
+import PortfolioFilter, { PortfolioType } from 'components/PortfolioFilter/PortfolioFilter'
 import WaterfallFilter from 'components/WaterfallFilter'
 
 gql`

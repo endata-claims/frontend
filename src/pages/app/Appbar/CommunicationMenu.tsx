@@ -40,7 +40,7 @@ const CommunicationMenu = (props: any) => {
   }
   const handleSeeLink = (id: any) => {
     handleClose()
-    push(`/app/claim/${id}/communications`)
+    push(`/app/claims/${id}/communications`)
   }
 
   return (
