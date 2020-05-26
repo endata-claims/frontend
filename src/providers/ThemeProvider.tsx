@@ -9,6 +9,7 @@ const ThemeProvider: React.FC = ({ children }) => {
   MuiFormLabelStyles({})
   MuiSwitchStyles({})
   MuiButttonStyles({})
+  MuiTabStyles({})
 
   return (
     <>
@@ -77,3 +78,9 @@ const MuiButttonStyles = makeStyles({
     textTransform: 'none'
   }
 }, { name: 'MuiButton' })
+
+const MuiTabStyles = makeStyles({
+  wrapper: {
+    textTransform: 'none'
+  }
+}, { name: 'MuiTab' })

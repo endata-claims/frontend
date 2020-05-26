@@ -3,6 +3,7 @@ import Uppy from '@uppy/core'
 import s3 from '@uppy/aws-s3'
 
 import { COMPANION_ENDPOINT } from 'configs'
+console.log(COMPANION_ENDPOINT)
 
 export default (options: any) => {
   const [uppy, setUppy] = React.useState<any>(null)
@@ -12,7 +13,7 @@ export default (options: any) => {
   React.useEffect(() => {
     const client = Uppy(options)
       .use(s3, {
-        companionUrl: COMPANION_ENDPOINT
+        companionUrl: COMPANION_ENDPOINT // 'http://localhost:3020'
       })
     setUppy(client)
     // eslint-disable-next-line
@@ -28,7 +29,10 @@ export default (options: any) => {
       ])
     }
     if (failed) {
-      const fail = failed.map(({ error: message, response: { status } }: any) => ({ message, status }))
+      const fail = failed.map(({ error: message, response }: any) => {
+        const status = response ? response.status : null
+        return { message, status }
+      })
       setErrors([
         ...errors,
         ...fail
