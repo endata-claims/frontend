@@ -80,7 +80,7 @@
     "@storybook/addons": "^5.3.13",
     "@storybook/preset-create-react-app": "^1.5.2",
     "@storybook/react": "^5.3.13",
-    "@types/enzyme": "^3.10.5",
+    "@types/enzyme": "3.10.12",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/lodash": "^4.14.149",
     "@types/react-helmet": "^5.0.15",
