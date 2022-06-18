@@ -809,7 +809,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.3"
 
-"@babel/plugin-transform-runtime@7.8.3", "@babel/plugin-transform-runtime@^7.8.3":
+"@babel/plugin-transform-runtime@7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.8.3.tgz#c0153bc0a5375ebc1f1591cb7eea223adea9f169"
   integrity sha512-/vqUt5Yh+cgPZXXjmaG9NT8aVfThKk7G4OqkVhrXqwsC5soMn/qTCxs36rZ2QFhpfTJcjw4SNDIZ4RUb8OL4jQ==
@@ -2647,10 +2647,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-table@^7.0.6":
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-7.0.6.tgz#29c729a95835114424d88e9a80c67df14327c042"
-  integrity sha512-eyicPAsO7/1MGzrOZhJAP35XApmLT2/0ylc3i0lVlBSRkxkW3ac7WbmQgbprbYGce+AUQ133OKqUKhQ/WvRGMA==
+"@types/react-table@7.7.12":
+  version "7.7.12"
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-7.7.12.tgz#628011d3cb695b07c678704a61f2f1d5b8e567fd"
+  integrity sha512-bRUent+NR/WwtDGwI/BqhZ8XnHghwHw0HUKeohzB5xN3K2qKWYE5w19e7GCuOkL1CXD9Gi1HFy7TIm2AvgWUHg==
   dependencies:
     "@types/react" "*"
 
@@ -13101,12 +13101,10 @@ react-syntax-highlighter@^11.0.2:
     prismjs "^1.8.4"
     refractor "^2.4.1"
 
-react-table@^7.0.0-rc.16:
-  version "7.0.0-rc.16"
-  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.0.0-rc.16.tgz#61aa22e5c6e4796ea3a0085653f5e4bb90bdab5d"
-  integrity sha512-2wcGKO56gKlE1IwJnFatCn1yzHIAwRgbTJJQeoSiERJ/Ed6VeLdJLMJkLuSnxZCwD8CjhZD+C/iXEaFubJVW3A==
-  dependencies:
-    "@babel/plugin-transform-runtime" "^7.8.3"
+react-table@7.8.0:
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.8.0.tgz#07858c01c1718c09f7f1aed7034fcfd7bda907d2"
+  integrity sha512-hNaz4ygkZO4bESeFfnfOft73iBUj8K5oKi1EcSHPAibEydfsX2MyU6Z8KCr3mv3C9Kqqh71U+DhZkFvibbnPbA==
 
 react-test-renderer@^16.0.0-0, react-test-renderer@^16.12.0:
   version "16.12.0"
