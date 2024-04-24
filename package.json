@@ -89,7 +89,7 @@
     "@types/react-table": "^7.0.6",
     "@types/recharts": "^1.8.5",
     "enzyme-adapter-react-16": "^1.15.2",
-    "gh-pages": "^2.2.0",
+    "gh-pages": "^5.0.0",
     "pretty": "^2.0.0",
     "react-test-renderer": "^16.12.0"
   }
