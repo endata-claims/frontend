@@ -19,7 +19,7 @@
     "@apollo/link-context": "^2.0.0-beta.3",
     "@apollo/link-error": "^2.0.0-beta.3",
     "@apollo/link-retry": "^2.0.0-beta.3",
-    "@date-io/date-fns": "1.x",
+    "@date-io/date-fns": "3.x",
     "@material-ui/core": "^4.9.3",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.43",
